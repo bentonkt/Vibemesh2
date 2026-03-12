@@ -1,0 +1,6 @@
+schema_version: 1
+generated_from:
+  ycb_inventory: data/objects/ycb/ycb_inventory.csv
+  hope_inventory: data/objects/hope/hope_inventory.csv
+objects:
+  []
