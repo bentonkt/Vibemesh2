@@ -1,0 +1,3 @@
+[submodule "mink"]
+	path = mink
+	url = https://github.com/kevinzakka/mink.git
