@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="035_power_drill">
+  <compiler angle="radian" inertiafromgeom="true" />
+  <default>
+    <default class="035_power_drill_visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0" density="0" />
+    </default>
+    <default class="035_power_drill_collision">
+      <geom type="mesh" group="3" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </default>
+  </default>
+  <asset>
+    <mesh name="035_power_drill_visual_mesh" file="../../../data/ycb/processed/035_power_drill/visual.obj" />
+    <mesh name="035_power_drill_collision_mesh" file="../../../data/ycb/processed/035_power_drill/collision.obj" />
+  </asset>
+  <worldbody>
+    <body name="035_power_drill" pos="0 0 0">
+      <joint name="035_power_drill_freejoint" type="free" damping="0.1" />
+      <geom name="035_power_drill_visual_geom" class="035_power_drill_visual" type="mesh" mesh="035_power_drill_visual_mesh" />
+      <geom name="035_power_drill_collision_geom" class="035_power_drill_collision" type="mesh" mesh="035_power_drill_collision_mesh" mass="0.895" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </body>
+  </worldbody>
+</mujoco>

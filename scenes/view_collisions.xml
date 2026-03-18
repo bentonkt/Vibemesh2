@@ -1,0 +1,97 @@
+<mujoco model="ycb_collision_viewer">
+  <compiler angle="radian" inertiafromgeom="true"/>
+
+  <option integrator="implicitfast" cone="elliptic" timestep="0.002" gravity="0 0 -9.81">
+    <flag multiccd="enable"/>
+  </option>
+
+  <visual>
+    <global offwidth="1280" offheight="720"/>
+    <!-- Only render group 3 (collision meshes) -->
+    <quality shadowsize="2048"/>
+  </visual>
+
+  <asset>
+    <texture type="2d" name="grid_tex" builtin="checker" width="512" height="512"
+             rgb1="0.9 0.9 0.9" rgb2="0.7 0.7 0.7"/>
+    <material name="grid_mat" texture="grid_tex" texrepeat="8 8" reflectance="0.1"/>
+
+    <!-- Object collision meshes -->
+    <mesh name="002_master_chef_can_col" file="../data/ycb/processed/002_master_chef_can/collision.obj"/>
+    <mesh name="003_cracker_box_col" file="../data/ycb/processed/003_cracker_box/collision.obj"/>
+    <mesh name="005_tomato_soup_can_col" file="../data/ycb/processed/005_tomato_soup_can/collision.obj"/>
+    <mesh name="006_mustard_bottle_col" file="../data/ycb/processed/006_mustard_bottle/collision.obj"/>
+    <mesh name="010_potted_meat_can_col" file="../data/ycb/processed/010_potted_meat_can/collision.obj"/>
+    <mesh name="025_mug_col" file="../data/ycb/processed/025_mug/collision.obj"/>
+    <mesh name="011_banana_col" file="../data/ycb/processed/011_banana/collision.obj"/>
+    <mesh name="061_foam_brick_col" file="../data/ycb/processed/061_foam_brick/collision.obj"/>
+  </asset>
+
+  <worldbody>
+    <!-- Lighting -->
+    <light name="key" pos="0 -1 2" dir="0 0.5 -1" directional="true" diffuse="0.8 0.8 0.8"/>
+    <light name="fill" pos="1 1 2" dir="-0.5 -0.5 -1" directional="true" diffuse="0.4 0.4 0.4"/>
+
+    <!-- Table -->
+    <body name="table" pos="0 0 0.4">
+      <geom type="box" size="0.5 0.5 0.02" rgba="0.4 0.35 0.3 1" material="grid_mat"/>
+    </body>
+
+    <!-- Objects on table — collision hulls only (group 0 so they render by default) -->
+    <body name="002_master_chef_can" pos="-0.25 -0.15 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="002_col" type="mesh" mesh="002_master_chef_can_col"
+            mass="0.414" rgba="0.2 0.6 0.9 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="003_cracker_box" pos="-0.10 -0.15 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="003_col" type="mesh" mesh="003_cracker_box_col"
+            mass="0.411" rgba="0.9 0.5 0.2 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="005_tomato_soup_can" pos="0.05 -0.15 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="005_col" type="mesh" mesh="005_tomato_soup_can_col"
+            mass="0.349" rgba="0.9 0.3 0.3 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="006_mustard_bottle" pos="0.20 -0.15 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="006_col" type="mesh" mesh="006_mustard_bottle_col"
+            mass="0.603" rgba="0.9 0.9 0.2 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="010_potted_meat_can" pos="-0.20 0.10 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="010_col" type="mesh" mesh="010_potted_meat_can_col"
+            mass="0.370" rgba="0.6 0.2 0.2 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="025_mug" pos="-0.05 0.10 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="025_col" type="mesh" mesh="025_mug_col"
+            mass="0.118" rgba="0.3 0.8 0.4 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="011_banana" pos="0.10 0.10 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="011_col" type="mesh" mesh="011_banana_col"
+            mass="0.066" rgba="0.9 0.85 0.2 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+
+    <body name="061_foam_brick" pos="0.25 0.10 0.55">
+      <joint type="free" damping="0.1"/>
+      <geom name="061_col" type="mesh" mesh="061_foam_brick_col"
+            mass="0.028" rgba="0.8 0.4 0.8 0.7"
+            condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001"/>
+    </body>
+  </worldbody>
+</mujoco>

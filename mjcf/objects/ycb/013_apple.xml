@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="013_apple">
+  <compiler angle="radian" inertiafromgeom="true" />
+  <default>
+    <default class="013_apple_visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0" density="0" />
+    </default>
+    <default class="013_apple_collision">
+      <geom type="mesh" group="3" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </default>
+  </default>
+  <asset>
+    <mesh name="013_apple_visual_mesh" file="../../../data/ycb/processed/013_apple/visual.obj" />
+    <mesh name="013_apple_collision_mesh" file="../../../data/ycb/processed/013_apple/collision.obj" />
+  </asset>
+  <worldbody>
+    <body name="013_apple" pos="0 0 0">
+      <joint name="013_apple_freejoint" type="free" damping="0.1" />
+      <geom name="013_apple_visual_geom" class="013_apple_visual" type="mesh" mesh="013_apple_visual_mesh" />
+      <geom name="013_apple_collision_geom" class="013_apple_collision" type="mesh" mesh="013_apple_collision_mesh" mass="0.246595" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </body>
+  </worldbody>
+</mujoco>

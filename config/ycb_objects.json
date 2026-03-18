@@ -1,0 +1,1178 @@
+[
+  {
+    "object_id": "001_chips_can",
+    "mass_kg": 1.1071566960830674,
+    "bbox_extents_m": [
+      0.0794773,
+      0.0776305,
+      0.245528156
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/001_chips_can/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/001_chips_can/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/001_chips_can/collision.obj"
+  },
+  {
+    "object_id": "002_master_chef_can",
+    "mass_kg": 0.414,
+    "bbox_extents_m": [
+      0.10252900000000001,
+      0.102377,
+      0.140177
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/002_master_chef_can/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/002_master_chef_can/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/002_master_chef_can/collision.obj"
+  },
+  {
+    "object_id": "003_cracker_box",
+    "mass_kg": 0.411,
+    "bbox_extents_m": [
+      0.0718,
+      0.16403600000000002,
+      0.213437
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/003_cracker_box/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/003_cracker_box/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/003_cracker_box/collision.obj"
+  },
+  {
+    "object_id": "004_sugar_box",
+    "mass_kg": 0.514,
+    "bbox_extents_m": [
+      0.049496,
+      0.094162,
+      0.176015
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/004_sugar_box/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/004_sugar_box/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/004_sugar_box/collision.obj"
+  },
+  {
+    "object_id": "005_tomato_soup_can",
+    "mass_kg": 0.349,
+    "bbox_extents_m": [
+      0.067911,
+      0.067743,
+      0.101855
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/005_tomato_soup_can/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/005_tomato_soup_can/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/005_tomato_soup_can/collision.obj"
+  },
+  {
+    "object_id": "006_mustard_bottle",
+    "mass_kg": 0.603,
+    "bbox_extents_m": [
+      0.09719799999999999,
+      0.066621,
+      0.191301
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/006_mustard_bottle/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/006_mustard_bottle/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/006_mustard_bottle/collision.obj"
+  },
+  {
+    "object_id": "007_tuna_fish_can",
+    "mass_kg": 0.171,
+    "bbox_extents_m": [
+      0.085559,
+      0.08554,
+      0.033538
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/007_tuna_fish_can/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/007_tuna_fish_can/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/007_tuna_fish_can/collision.obj"
+  },
+  {
+    "object_id": "008_pudding_box",
+    "mass_kg": 0.187,
+    "bbox_extents_m": [
+      0.137938,
+      0.128756,
+      0.038889
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/008_pudding_box/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/008_pudding_box/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/008_pudding_box/collision.obj"
+  },
+  {
+    "object_id": "009_gelatin_box",
+    "mass_kg": 0.097,
+    "bbox_extents_m": [
+      0.089404,
+      0.101108,
+      0.030074
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/009_gelatin_box/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/009_gelatin_box/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/009_gelatin_box/collision.obj"
+  },
+  {
+    "object_id": "010_potted_meat_can",
+    "mass_kg": 0.37,
+    "bbox_extents_m": [
+      0.102085,
+      0.060103000000000004,
+      0.08354299999999999
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/010_potted_meat_can/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/010_potted_meat_can/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/010_potted_meat_can/collision.obj"
+  },
+  {
+    "object_id": "011_banana",
+    "mass_kg": 0.066,
+    "bbox_extents_m": [
+      0.10894200000000001,
+      0.178447,
+      0.036739999999999995
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/011_banana/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/011_banana/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/011_banana/collision.obj"
+  },
+  {
+    "object_id": "012_strawberry",
+    "mass_kg": 0.04832344833863233,
+    "bbox_extents_m": [
+      0.045224,
+      0.045286,
+      0.045675
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/012_strawberry/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/012_strawberry/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/012_strawberry/collision.obj"
+  },
+  {
+    "object_id": "013_apple",
+    "mass_kg": 0.24659539116871249,
+    "bbox_extents_m": [
+      0.075448,
+      0.074871,
+      0.07188900000000001
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/013_apple/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/013_apple/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/013_apple/collision.obj"
+  },
+  {
+    "object_id": "014_lemon",
+    "mass_kg": 0.09683451845782233,
+    "bbox_extents_m": [
+      0.060588,
+      0.059299000000000004,
+      0.053017
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/014_lemon/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/014_lemon/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/014_lemon/collision.obj"
+  },
+  {
+    "object_id": "015_peach",
+    "mass_kg": 0.11721380481271601,
+    "bbox_extents_m": [
+      0.062123,
+      0.06263200000000001,
+      0.058645
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/015_peach/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/015_peach/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/015_peach/collision.obj"
+  },
+  {
+    "object_id": "016_pear",
+    "mass_kg": 0.192218040717369,
+    "bbox_extents_m": [
+      0.066546,
+      0.100455,
+      0.065663
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/016_pear/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/016_pear/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/016_pear/collision.obj"
+  },
+  {
+    "object_id": "017_orange",
+    "mass_kg": 0.20272265250081667,
+    "bbox_extents_m": [
+      0.072158,
+      0.073986,
+      0.071352
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/017_orange/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/017_orange/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/017_orange/collision.obj"
+  },
+  {
+    "object_id": "018_plum",
+    "mass_kg": 0.08617763838623749,
+    "bbox_extents_m": [
+      0.057190000000000005,
+      0.054941,
+      0.05304
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/018_plum/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/018_plum/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/018_plum/collision.obj"
+  },
+  {
+    "object_id": "019_pitcher_base",
+    "mass_kg": 0.178,
+    "bbox_extents_m": [
+      0.149134,
+      0.14482899999999999,
+      0.242387
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/019_pitcher_base/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/019_pitcher_base/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/019_pitcher_base/collision.obj"
+  },
+  {
+    "object_id": "021_bleach_cleanser",
+    "mass_kg": 1.131,
+    "bbox_extents_m": [
+      0.102433,
+      0.06769900000000001,
+      0.25058
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/021_bleach_cleanser/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/021_bleach_cleanser/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/021_bleach_cleanser/collision.obj"
+  },
+  {
+    "object_id": "022_windex_bottle",
+    "mass_kg": 0.7354300167246426,
+    "bbox_extents_m": [
+      0.082727,
+      0.095428,
+      0.269801
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/022_windex_bottle/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/022_windex_bottle/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/022_windex_bottle/collision.obj"
+  },
+  {
+    "object_id": "023_wine_glass",
+    "mass_kg": 0.029782158600284405,
+    "bbox_extents_m": [
+      0.09323599999999999,
+      0.13894270000000003,
+      0.09870254
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/023_wine_glass/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/023_wine_glass/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/023_wine_glass/collision.obj"
+  },
+  {
+    "object_id": "024_bowl",
+    "mass_kg": 0.147,
+    "bbox_extents_m": [
+      0.16146300000000002,
+      0.161164,
+      0.055009
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/024_bowl/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/024_bowl/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/024_bowl/collision.obj"
+  },
+  {
+    "object_id": "025_mug",
+    "mass_kg": 0.118,
+    "bbox_extents_m": [
+      0.116984,
+      0.093131,
+      0.081303
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/025_mug/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/025_mug/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/025_mug/collision.obj"
+  },
+  {
+    "object_id": "026_sponge",
+    "mass_kg": 0.11574257606853668,
+    "bbox_extents_m": [
+      0.079147,
+      0.112113,
+      0.019007
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/026_sponge/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/026_sponge/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/026_sponge/collision.obj"
+  },
+  {
+    "object_id": "028_skillet_lid",
+    "mass_kg": 0.09805221382448383,
+    "bbox_extents_m": [
+      0.268264,
+      0.269153,
+      0.076055
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/028_skillet_lid/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/028_skillet_lid/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/028_skillet_lid/collision.obj"
+  },
+  {
+    "object_id": "029_plate",
+    "mass_kg": 0.057831861697350495,
+    "bbox_extents_m": [
+      0.26015,
+      0.261102,
+      0.026723
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/029_plate/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/029_plate/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/029_plate/collision.obj"
+  },
+  {
+    "object_id": "030_fork",
+    "mass_kg": 0.0196015932737365,
+    "bbox_extents_m": [
+      0.197556,
+      0.027110000000000002,
+      0.015884000000000002
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/030_fork/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/030_fork/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/030_fork/collision.obj"
+  },
+  {
+    "object_id": "031_spoon",
+    "mass_kg": 0.02432101198831533,
+    "bbox_extents_m": [
+      0.18596000000000001,
+      0.082929,
+      0.020891999999999997
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/031_spoon/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/031_spoon/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/031_spoon/collision.obj"
+  },
+  {
+    "object_id": "032_knife",
+    "mass_kg": 0.021835475900861333,
+    "bbox_extents_m": [
+      0.21483000000000002,
+      0.020605,
+      0.022614000000000002
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/032_knife/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/032_knife/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/032_knife/collision.obj"
+  },
+  {
+    "object_id": "033_spatula",
+    "mass_kg": 0.06713356277814285,
+    "bbox_extents_m": [
+      0.30552199999999996,
+      0.12459399999999998,
+      0.032933000000000004
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/033_spatula/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/033_spatula/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/033_spatula/collision.obj"
+  },
+  {
+    "object_id": "035_power_drill",
+    "mass_kg": 0.895,
+    "bbox_extents_m": [
+      0.18420699999999998,
+      0.187515,
+      0.057293000000000004
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/035_power_drill/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/035_power_drill/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/035_power_drill/collision.obj"
+  },
+  {
+    "object_id": "036_wood_block",
+    "mass_kg": 0.729,
+    "bbox_extents_m": [
+      0.103917,
+      0.103464,
+      0.206003
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/036_wood_block/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/036_wood_block/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/036_wood_block/collision.obj"
+  },
+  {
+    "object_id": "037_scissors",
+    "mass_kg": 0.082,
+    "bbox_extents_m": [
+      0.09608,
+      0.20152399999999998,
+      0.015671
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/037_scissors/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/037_scissors/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/037_scissors/collision.obj"
+  },
+  {
+    "object_id": "038_padlock",
+    "mass_kg": 0.0457020034268325,
+    "bbox_extents_m": [
+      0.066973,
+      0.068055,
+      0.029140999999999997
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/038_padlock/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/038_padlock/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/038_padlock/collision.obj"
+  },
+  {
+    "object_id": "039_key",
+    "mass_kg": 15.813624039455048,
+    "bbox_extents_m": [
+      0.4520530700683594,
+      0.4520530700683594,
+      0.0957089844159782
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/039_key/nontextured.stl",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/039_key/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/039_key/collision.obj"
+  },
+  {
+    "object_id": "040_large_marker",
+    "mass_kg": 0.0158,
+    "bbox_extents_m": [
+      0.021022,
+      0.120969,
+      0.018895
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/040_large_marker/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/040_large_marker/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/040_large_marker/collision.obj"
+  },
+  {
+    "object_id": "041_small_marker",
+    "mass_kg": 0.045594013401910445,
+    "bbox_extents_m": [
+      0.0427718,
+      0.0432303,
+      0.07994397
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/041_small_marker/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/041_small_marker/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/041_small_marker/collision.obj"
+  },
+  {
+    "object_id": "042_adjustable_wrench",
+    "mass_kg": 0.019821730387476,
+    "bbox_extents_m": [
+      0.124799,
+      0.181093,
+      0.014654
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/042_adjustable_wrench/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/042_adjustable_wrench/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/042_adjustable_wrench/collision.obj"
+  },
+  {
+    "object_id": "043_phillips_screwdriver",
+    "mass_kg": 0.07700548566461368,
+    "bbox_extents_m": [
+      0.194858,
+      0.106967,
+      0.035515
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/043_phillips_screwdriver/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/043_phillips_screwdriver/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/043_phillips_screwdriver/collision.obj"
+  },
+  {
+    "object_id": "044_flat_screwdriver",
+    "mass_kg": 0.07621626182656016,
+    "bbox_extents_m": [
+      0.161871,
+      0.156885,
+      0.035040999999999996
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/044_flat_screwdriver/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/044_flat_screwdriver/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/044_flat_screwdriver/collision.obj"
+  },
+  {
+    "object_id": "047_plastic_nut",
+    "mass_kg": 14.244707481538772,
+    "bbox_extents_m": [
+      0.45009613037109375,
+      0.4520530700683594,
+      0.10156134888529778
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/047_plastic_nut/nontextured.stl",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/047_plastic_nut/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/047_plastic_nut/collision.obj"
+  },
+  {
+    "object_id": "048_hammer",
+    "mass_kg": 0.25894043237553566,
+    "bbox_extents_m": [
+      0.1822,
+      0.33272199999999996,
+      0.032862
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/048_hammer/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/048_hammer/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/048_hammer/collision.obj"
+  },
+  {
+    "object_id": "049_small_clamp",
+    "mass_kg": 0.05532610712594425,
+    "bbox_extents_m": [
+      0.14677076,
+      0.11545949999999999,
+      0.04696654
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/049_small_clamp/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/049_small_clamp/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/049_small_clamp/collision.obj"
+  },
+  {
+    "object_id": "050_medium_clamp",
+    "mass_kg": 0.022388684701155667,
+    "bbox_extents_m": [
+      0.088926,
+      0.07678399999999999,
+      0.026056
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/050_medium_clamp/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/050_medium_clamp/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/050_medium_clamp/collision.obj"
+  },
+  {
+    "object_id": "051_large_clamp",
+    "mass_kg": 0.125,
+    "bbox_extents_m": [
+      0.12004100000000001,
+      0.171074,
+      0.039172
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/051_large_clamp/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/051_large_clamp/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/051_large_clamp/collision.obj"
+  },
+  {
+    "object_id": "052_extra_large_clamp",
+    "mass_kg": 0.202,
+    "bbox_extents_m": [
+      0.209954,
+      0.164344,
+      0.036316999999999995
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/052_extra_large_clamp/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/052_extra_large_clamp/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/052_extra_large_clamp/collision.obj"
+  },
+  {
+    "object_id": "053_mini_soccer_ball",
+    "mass_kg": 1.0465229343801774,
+    "bbox_extents_m": [
+      0.128057,
+      0.127837,
+      0.125587
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/053_mini_soccer_ball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/053_mini_soccer_ball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/053_mini_soccer_ball/collision.obj"
+  },
+  {
+    "object_id": "054_softball",
+    "mass_kg": 0.4626568501712982,
+    "bbox_extents_m": [
+      0.09537,
+      0.09617400000000001,
+      0.09459100000000001
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/054_softball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/054_softball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/054_softball/collision.obj"
+  },
+  {
+    "object_id": "055_baseball",
+    "mass_kg": 0.20274709259390356,
+    "bbox_extents_m": [
+      0.073078,
+      0.073712,
+      0.072563
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/055_baseball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/055_baseball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/055_baseball/collision.obj"
+  },
+  {
+    "object_id": "056_tennis_ball",
+    "mass_kg": 0.1559683746628298,
+    "bbox_extents_m": [
+      0.066975,
+      0.06703,
+      0.066457
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/056_tennis_ball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/056_tennis_ball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/056_tennis_ball/collision.obj"
+  },
+  {
+    "object_id": "057_racquetball",
+    "mass_kg": 0.09106106830055334,
+    "bbox_extents_m": [
+      0.055778,
+      0.056055999999999995,
+      0.055574
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/057_racquetball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/057_racquetball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/057_racquetball/collision.obj"
+  },
+  {
+    "object_id": "058_golf_ball",
+    "mass_kg": 0.040280065824670676,
+    "bbox_extents_m": [
+      0.042679,
+      0.042720999999999995,
+      0.042375
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/058_golf_ball/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/058_golf_ball/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/058_golf_ball/collision.obj"
+  },
+  {
+    "object_id": "059_chain",
+    "mass_kg": 0.11189363696047933,
+    "bbox_extents_m": [
+      0.310311,
+      0.30718500000000004,
+      0.024756
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/059_chain/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/059_chain/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/059_chain/collision.obj"
+  },
+  {
+    "object_id": "061_foam_brick",
+    "mass_kg": 0.028,
+    "bbox_extents_m": [
+      0.052559999999999996,
+      0.077874,
+      0.051193
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/061_foam_brick/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/061_foam_brick/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/061_foam_brick/collision.obj"
+  },
+  {
+    "object_id": "062_dice",
+    "mass_kg": 0.004312016842944167,
+    "bbox_extents_m": [
+      0.017158,
+      0.017079,
+      0.017554
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/062_dice/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/062_dice/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/062_dice/collision.obj"
+  },
+  {
+    "object_id": "063-a_marbles",
+    "mass_kg": 0.10889942293808134,
+    "bbox_extents_m": [
+      0.08680299999999999,
+      0.077363,
+      0.071511
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/063-a_marbles/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-a_marbles/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-a_marbles/collision.obj"
+  },
+  {
+    "object_id": "063-b_marbles",
+    "mass_kg": 0.02189252485695283,
+    "bbox_extents_m": [
+      0.035013999999999997,
+      0.035031999999999994,
+      0.034488
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/063-b_marbles/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-b_marbles/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-b_marbles/collision.obj"
+  },
+  {
+    "object_id": "063-d_marbles",
+    "mass_kg": 0.00547417898013468,
+    "bbox_extents_m": [
+      0.0244195,
+      0.0242531,
+      0.01794148
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/063-d_marbles/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-d_marbles/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/063-d_marbles/collision.obj"
+  },
+  {
+    "object_id": "065-a_cups",
+    "mass_kg": 0.023348454346731825,
+    "bbox_extents_m": [
+      0.057086,
+      0.057425000000000004,
+      0.061515999999999994
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-a_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-a_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-a_cups/collision.obj"
+  },
+  {
+    "object_id": "065-b_cups",
+    "mass_kg": 0.02438635258780366,
+    "bbox_extents_m": [
+      0.060959,
+      0.060944,
+      0.063965
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-b_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-b_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-b_cups/collision.obj"
+  },
+  {
+    "object_id": "065-c_cups",
+    "mass_kg": 0.02833011304343816,
+    "bbox_extents_m": [
+      0.064974,
+      0.06510300000000002,
+      0.06655599999999999
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-c_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-c_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-c_cups/collision.obj"
+  },
+  {
+    "object_id": "065-d_cups",
+    "mass_kg": 0.0351487561691045,
+    "bbox_extents_m": [
+      0.070689,
+      0.07070299999999999,
+      0.06892999999999999
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-d_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-d_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-d_cups/collision.obj"
+  },
+  {
+    "object_id": "065-e_cups",
+    "mass_kg": 0.04532431815174534,
+    "bbox_extents_m": [
+      0.075543,
+      0.07527400000000001,
+      0.070778
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-e_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-e_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-e_cups/collision.obj"
+  },
+  {
+    "object_id": "065-f_cups",
+    "mass_kg": 0.049480229313043175,
+    "bbox_extents_m": [
+      0.08074,
+      0.080872,
+      0.07217799999999999
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-f_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-f_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-f_cups/collision.obj"
+  },
+  {
+    "object_id": "065-g_cups",
+    "mass_kg": 0.04526128588154451,
+    "bbox_extents_m": [
+      0.086818,
+      0.087671,
+      0.073964
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-g_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-g_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-g_cups/collision.obj"
+  },
+  {
+    "object_id": "065-h_cups",
+    "mass_kg": 0.046653226210173836,
+    "bbox_extents_m": [
+      0.09149499999999999,
+      0.091616,
+      0.075063
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-h_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-h_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-h_cups/collision.obj"
+  },
+  {
+    "object_id": "065-i_cups",
+    "mass_kg": 0.04956830993945483,
+    "bbox_extents_m": [
+      0.098168,
+      0.097972,
+      0.075554
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-i_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-i_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-i_cups/collision.obj"
+  },
+  {
+    "object_id": "065-j_cups",
+    "mass_kg": 0.05458626823715616,
+    "bbox_extents_m": [
+      0.10240300000000001,
+      0.102995,
+      0.075489
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/065-j_cups/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-j_cups/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/065-j_cups/collision.obj"
+  },
+  {
+    "object_id": "070-a_colored_wood_blocks",
+    "mass_kg": 2.346336723001708,
+    "bbox_extents_m": [
+      0.142097,
+      0.141175,
+      0.165379
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/070-a_colored_wood_blocks/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/070-a_colored_wood_blocks/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/070-a_colored_wood_blocks/collision.obj"
+  },
+  {
+    "object_id": "070-b_colored_wood_blocks",
+    "mass_kg": 0.016408287444917166,
+    "bbox_extents_m": [
+      0.034929,
+      0.034932,
+      0.025847
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/070-b_colored_wood_blocks/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/070-b_colored_wood_blocks/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/070-b_colored_wood_blocks/collision.obj"
+  },
+  {
+    "object_id": "071_nine_hole_peg_test",
+    "mass_kg": 0.6265859969762233,
+    "bbox_extents_m": [
+      0.16752899999999998,
+      0.191112,
+      0.040677
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/071_nine_hole_peg_test/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/071_nine_hole_peg_test/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/071_nine_hole_peg_test/collision.obj"
+  },
+  {
+    "object_id": "072-a_toy_airplane",
+    "mass_kg": 1.5645812091364013,
+    "bbox_extents_m": [
+      0.25518399999999997,
+      0.262932,
+      0.183438
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-a_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-a_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-a_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-b_toy_airplane",
+    "mass_kg": 0.34672561297552923,
+    "bbox_extents_m": [
+      0.120329,
+      0.181678,
+      0.05928
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-b_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-b_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-b_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-c_toy_airplane",
+    "mass_kg": 0.020862498027561835,
+    "bbox_extents_m": [
+      0.030650999999999998,
+      0.030643000000000004,
+      0.066722
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-c_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-c_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-c_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-d_toy_airplane",
+    "mass_kg": 0.018372956359595332,
+    "bbox_extents_m": [
+      0.030671999999999998,
+      0.030716,
+      0.066412
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-d_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-d_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-d_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-e_toy_airplane",
+    "mass_kg": 0.0184087117481425,
+    "bbox_extents_m": [
+      0.030758,
+      0.030784,
+      0.066157
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-e_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-e_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-e_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-f_toy_airplane",
+    "mass_kg": 0.009624094324859937,
+    "bbox_extents_m": [
+      0.0254654,
+      0.02490903,
+      0.0351586
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-f_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-f_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-f_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-g_toy_airplane",
+    "mass_kg": 13.256954053947412,
+    "bbox_extents_m": [
+      0.4520530700683594,
+      0.4520530700683594,
+      0.07986957626417279
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-g_toy_airplane/nontextured.stl",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-g_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-g_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-h_toy_airplane",
+    "mass_kg": 0.0508456756837413,
+    "bbox_extents_m": [
+      0.0758149,
+      0.0819725,
+      0.09321969000000001
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-h_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-h_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-h_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-i_toy_airplane",
+    "mass_kg": 0.03523140660736503,
+    "bbox_extents_m": [
+      0.0334619,
+      0.0325067,
+      0.06486924000000001
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-i_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-i_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-i_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-j_toy_airplane",
+    "mass_kg": 0.028328610993609657,
+    "bbox_extents_m": [
+      0.0342586,
+      0.0353225,
+      0.05957797
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-j_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-j_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-j_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "072-k_toy_airplane",
+    "mass_kg": 0.24626676091969285,
+    "bbox_extents_m": [
+      0.13839240000000003,
+      0.10958970000000001,
+      0.12152349000000001
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/072-k_toy_airplane/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-k_toy_airplane/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/072-k_toy_airplane/collision.obj"
+  },
+  {
+    "object_id": "073-a_lego_duplo",
+    "mass_kg": 0.018117374780007828,
+    "bbox_extents_m": [
+      0.064119,
+      0.032515,
+      0.023927999999999998
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-a_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-a_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-a_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-b_lego_duplo",
+    "mass_kg": 0.029576499279607836,
+    "bbox_extents_m": [
+      0.036888,
+      0.036759,
+      0.043316
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-b_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-b_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-b_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-c_lego_duplo",
+    "mass_kg": 0.023774518535519998,
+    "bbox_extents_m": [
+      0.033895999999999996,
+      0.064821,
+      0.023717
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-c_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-c_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-c_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-d_lego_duplo",
+    "mass_kg": 0.03797934400201833,
+    "bbox_extents_m": [
+      0.054488999999999996,
+      0.056186,
+      0.043137999999999996
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-d_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-d_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-d_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-e_lego_duplo",
+    "mass_kg": 0.060222363910709675,
+    "bbox_extents_m": [
+      0.068932,
+      0.09980900000000001,
+      0.043186
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-e_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-e_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-e_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-f_lego_duplo",
+    "mass_kg": 0.03094883764375316,
+    "bbox_extents_m": [
+      0.036605,
+      0.036683999999999994,
+      0.043421999999999995
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-f_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-f_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-f_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-g_lego_duplo",
+    "mass_kg": 0.24760532090067736,
+    "bbox_extents_m": [
+      0.13361599999999998,
+      0.304086,
+      0.059998
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-g_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-g_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-g_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-h_lego_duplo",
+    "mass_kg": 0.06995080519598973,
+    "bbox_extents_m": [
+      0.0631873,
+      0.0702955,
+      0.03600565
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-h_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-h_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-h_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-i_lego_duplo",
+    "mass_kg": 0.05032984382282582,
+    "bbox_extents_m": [
+      0.043661599999999995,
+      0.0434061,
+      0.045645719999999994
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-i_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-i_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-i_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-j_lego_duplo",
+    "mass_kg": 0.049363151697713624,
+    "bbox_extents_m": [
+      0.0407374,
+      0.0406228,
+      0.043842519999999996
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-j_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-j_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-j_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-k_lego_duplo",
+    "mass_kg": 0.047672832112571686,
+    "bbox_extents_m": [
+      0.0406061,
+      0.0409688,
+      0.0439112
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-k_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-k_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-k_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-l_lego_duplo",
+    "mass_kg": 0.04940456024627844,
+    "bbox_extents_m": [
+      0.0427672,
+      0.0439694,
+      0.04470088
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-l_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-l_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-l_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "073-m_lego_duplo",
+    "mass_kg": 1.0849811759772139,
+    "bbox_extents_m": [
+      0.174537,
+      0.1816338,
+      0.1101625
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/073-m_lego_duplo/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-m_lego_duplo/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/073-m_lego_duplo/collision.obj"
+  },
+  {
+    "object_id": "076_timer",
+    "mass_kg": 0.3207080927262092,
+    "bbox_extents_m": [
+      0.1146963,
+      0.1135192,
+      0.0613606
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/076_timer/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/076_timer/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/076_timer/collision.obj"
+  },
+  {
+    "object_id": "077_rubiks_cube",
+    "mass_kg": 0.18287731685751213,
+    "bbox_extents_m": [
+      0.075745,
+      0.07611699999999999,
+      0.057939000000000004
+    ],
+    "source_mesh": "/Users/bentontameling/Dev/Vibemesh2/models/ycb/077_rubiks_cube/textured.obj",
+    "visual_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/077_rubiks_cube/visual.obj",
+    "collision_mesh": "/Users/bentontameling/Dev/Vibemesh2/data/ycb/processed/077_rubiks_cube/collision.obj"
+  }
+]

@@ -1,0 +1,12 @@
+# Raw and processed meshes (~1.8GB) — regenerate with: python scripts/process_ycb.py
+models/ycb/
+data/ycb/
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+
+# OS
+.DS_Store

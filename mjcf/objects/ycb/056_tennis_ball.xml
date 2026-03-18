@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="056_tennis_ball">
+  <compiler angle="radian" inertiafromgeom="true" />
+  <default>
+    <default class="056_tennis_ball_visual">
+      <geom type="mesh" group="2" contype="0" conaffinity="0" density="0" />
+    </default>
+    <default class="056_tennis_ball_collision">
+      <geom type="mesh" group="3" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </default>
+  </default>
+  <asset>
+    <mesh name="056_tennis_ball_visual_mesh" file="../../../data/ycb/processed/056_tennis_ball/visual.obj" />
+    <mesh name="056_tennis_ball_collision_mesh" file="../../../data/ycb/processed/056_tennis_ball/collision.obj" />
+  </asset>
+  <worldbody>
+    <body name="056_tennis_ball" pos="0 0 0">
+      <joint name="056_tennis_ball_freejoint" type="free" damping="0.1" />
+      <geom name="056_tennis_ball_visual_geom" class="056_tennis_ball_visual" type="mesh" mesh="056_tennis_ball_visual_mesh" />
+      <geom name="056_tennis_ball_collision_geom" class="056_tennis_ball_collision" type="mesh" mesh="056_tennis_ball_collision_mesh" mass="0.155968" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
+    </body>
+  </worldbody>
+</mujoco>
