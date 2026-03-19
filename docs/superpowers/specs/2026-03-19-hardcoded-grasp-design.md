@@ -14,39 +14,62 @@ Four phases, each defined by an EE mocap target and finger configuration:
 
 | Phase | EE Mocap Target | Fingers | Transition |
 |-------|----------------|---------|------------|
-| **PRE_GRASP** | Above can (~15cm), palm-down | Open (joints ~0) | EE position error < 1cm |
-| **DESCEND** | Lowered to grasp height (can center) | Open | EE position error < 1cm |
-| **CLOSE** | Hold position | Close around can | Finger joints settle (low velocity) |
-| **LIFT** | Raise ~15cm | Hold closed | EE position error < 1cm, then hold indefinitely |
+| **PRE_GRASP** | Above can (~15cm), palm-down | Open (joints ~0) | EE pos error < 1cm AND orientation error < 0.1 rad |
+| **DESCEND** | Lowered to grasp height (can center) | Open | EE pos error < 1cm AND orientation error < 0.1 rad |
+| **CLOSE** | Hold position | Close around can | Finger qvel < 0.05 rad/s for 0.5s (see below) |
+| **LIFT** | Raise ~15cm | Hold closed | EE pos error < 1cm, then hold indefinitely |
+
+### Phase timeout
+
+Each phase has a maximum duration (e.g., 5s). If the IK doesn't converge within that window, print a warning and advance anyway. This prevents infinite loops on unreachable targets.
 
 ## Finger close strategy
 
 The LEAP hand has 4 fingers total (3 standard + thumb):
-- `tip_1`, `tip_2`, `tip_3` (index, middle, ring) curl inward from one side
+- `tip_1` (index), `tip_2` (middle), `tip_3` (ring) curl inward from one side
 - `th_tip` (thumb) opposes from the other side
-- Finger mocap targets are set to positions producing a cylindrical wrap around the ~6.6cm diameter can
+
+### Close approach: direct joint angle targets
+
+During the CLOSE phase, **bypass finger IK** and drive the 16 LEAP joint actuators directly via `data.ctrl`. This avoids conflicts between the finger mocap palm-following logic and the IK solver fighting contact forces.
+
+Starting joint angle targets for a cylindrical wrap (will need tuning):
+- **Index/Middle/Ring** (joints 0-11, 4 per finger): MCP spread ~0, MCP flex ~1.2 rad, DIP ~1.0 rad, fingertip ~1.0 rad
+- **Thumb** (joints 12-15): PIP_4 ~1.0 rad, thumb PIP ~1.2 rad, thumb DIP ~0.5 rad, thumb tip ~0.8 rad
+
+These are initial estimates — the implementation will print joint values and allow easy tuning.
+
+### CLOSE transition criterion
+
+Monitor `data.qvel` for the LEAP hand joints (indices 7-22 in qvel, corresponding to the 16 hand DOFs after the 7 arm joints). Transition when `max(abs(qvel[7:23])) < 0.05` has held for at least 0.5 seconds (100 timesteps at 200Hz).
+
+## Palm-down orientation
+
+Read the `attachment_site` orientation from the home pose at startup (`mink.SE3.from_frame_name(...)`) and use that as the base orientation. Then apply a rotation to point palm downward. The exact quaternion will be read from the sim at runtime rather than hardcoded, since it depends on the hand attachment transform.
 
 ## Control flow
 
-Same sim loop as `test_scene.py`:
-1. State machine updates mocap targets based on current phase
-2. IK solver (mink) converts EE + finger mocap targets to joint commands
-3. Joint commands written to `data.ctrl`
-4. `mj_step` advances physics
-5. Viewer syncs
+Same sim loop structure as `test_scene.py`:
+1. State machine checks phase transition conditions
+2. State machine updates EE mocap target position/orientation
+3. During PRE_GRASP/DESCEND/LIFT: finger mocap targets follow palm (same as test_scene.py), IK solves for all joints
+4. During CLOSE: **skip finger IK and palm-following**; write finger joint targets directly to `data.ctrl[7:23]`; IK still solves for arm joints only (to hold EE position)
+5. `mj_step` advances physics
+6. Viewer syncs
 
 ## What gets reused
 
 - `build_scene()`, `build_robot_spec()` from `test_scene.py`
-- All IK setup: mink Configuration, FrameTask, RelativeFrameTask for fingers
+- IK setup: mink Configuration, FrameTask, RelativeFrameTask for fingers (fingers only active in non-CLOSE phases)
 - Contact parameters, proxy geoms, hand-object pair settings
+- Temp directory cleanup pattern (`finally: shutil.rmtree(temp_dir)`)
 
 ## What's new
 
-- State machine driving mocap targets through waypoints
-- Finger open/close target positions (palm-relative)
-- Phase transition logic (position error threshold + optional settling time)
-- Hardcoded waypoint positions and palm-down orientation quaternion
+- State machine with 4 phases and transition logic
+- Direct finger joint angle targets for CLOSE phase
+- Phase timeout safety
+- EE waypoint positions derived from can spawn position
 
 ## Object details
 
