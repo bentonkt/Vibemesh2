@@ -268,14 +268,7 @@ def main():
                 T_wt = mink.SE3.from_mocap_name(model, data, "target")
                 ee_task.set_target(T_wt)
 
-                # Update finger tasks
-                for finger, task in zip(FINGERS, finger_tasks):
-                    T_pm = configuration.get_transform(
-                        f"{finger}_target", "body", "leap_right/palm_lower", "body"
-                    )
-                    task.set_target(T_pm)
-
-                # Move finger mocap targets with the palm
+                # Move finger mocap targets with the palm (before reading them)
                 T_palm = configuration.get_transform_frame_to_world(
                     "leap_right/palm_lower", "body"
                 )
@@ -287,6 +280,16 @@ def main():
                     T_new = T_delta @ T_w_mocap
                     data.mocap_pos[mocap_id] = T_new.translation()
                     data.mocap_quat[mocap_id] = T_new.rotation().wxyz
+
+                # Update finger tasks: read mocap poses from data, convert to palm-relative
+                world_to_palm = configuration.get_transform_frame_to_world(
+                    "leap_right/palm_lower", "body"
+                ).inverse()
+                for finger, task in zip(FINGERS, finger_tasks):
+                    T_world_target = mink.SE3.from_mocap_name(
+                        model, data, f"{finger}_target"
+                    )
+                    task.set_target(world_to_palm @ T_world_target)
 
                 # Solve IK for desired joint positions
                 vel = mink.solve_ik(
