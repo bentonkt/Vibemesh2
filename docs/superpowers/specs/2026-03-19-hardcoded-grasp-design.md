@@ -14,16 +14,17 @@ Six phases, each defined by an EE mocap target and finger configuration:
 
 | Phase | EE Mocap Target | Fingers | Transition |
 |-------|----------------|---------|------------|
-| **SETTLE** | Hold home pose while object settles | Open | Fixed duration: 800 steps |
+| **SETTLE** | Hold home pose while object settles | Open | Fixed duration: 4000 steps |
 | **PRE_GRASP** | Side-hover pose, offset away from can and slightly above grasp height | Open | EE pos error < 1cm AND orientation error < 0.1 rad |
 | **APPROACH** | Lateral approach from the `+Y` side to the can mid-height | Open | EE pos error < 1cm AND orientation error < 0.1 rad |
 | **SEAT** | Final push-in to move the open hand onto the can | Open | Any hand-can proxy contact OR max seat bias reached |
 | **CLOSE** | Hold seated side-grasp pose | Close around can | Any seated hand-can contact, then finger qvel < 0.05 rad/s for 0.5s; log two-sided proxy contact when available |
-| **LIFT** | Raise vertically while holding the side-grasp pose | Hold closed | EE pos error < 1cm, then hold indefinitely |
+| **LIFT** | Raise vertically while holding the side-grasp pose | Hold closed | EE pos error < 1cm, then advance to release |
+| **DROP** | Hold the lifted wrist pose while releasing the can | Open | Fixed duration: 2000 steps |
 
 ### Phase timeout
 
-Each phase after `SETTLE` has a maximum duration (e.g. 5s). If the IK does not converge within that window, print a warning with both position and orientation error and either advance or stop as described below. This prevents infinite loops on unreachable targets.
+The grasp loop runs at 1000 Hz to match the MuJoCo `0.001` s physics timestep, so the viewer plays in real time instead of slow motion. Each phase after `SETTLE` has a maximum duration of 5000 steps (5 s). If the IK does not converge within that window, print a warning with both position and orientation error and either advance or stop as described below. This prevents infinite loops on unreachable targets.
 
 ## Runtime object targeting
 
@@ -126,7 +127,7 @@ Palm-only contact is acceptable during `SEAT`, and the script now treats sustain
 Monitor `data.qvel` for the LEAP hand joints (indices 7-22 in `qvel`, corresponding to the 16 hand DOFs after the 7 arm joints). Transition to `LIFT` only when:
 
 - some seated hand-can contact has been observed during `SEAT` or `CLOSE`
-- `max(abs(qvel[7:23])) < 0.05` has held for at least 0.5 seconds (100 timesteps at 200 Hz)
+- `max(abs(qvel[7:23])) < 0.05` has held for at least 0.5 seconds (500 timesteps at 1000 Hz)
 
 Prefer two-sided proxy contact and log it when it appears. If `CLOSE` times out after seated can contact has already been observed, continue to `LIFT`; only stop before lift when no hand-can contact was observed at all.
 
@@ -139,7 +140,8 @@ Prefer two-sided proxy contact and log it when it appears. If `CLOSE` times out 
 5. `SEAT`: skip finger IK, keep fingers open, and press the wrist onto the can; if no contact is seen, increment `seat_bias`
 6. `CLOSE`: hold the seated target and write finger joint targets directly to `data.ctrl[7:23]`; arm IK still holds the wrist
 7. `LIFT`: after the closed hand has settled with seated can contact, keep fingers closed and raise vertically
-8. `mj_step` advances physics and the viewer syncs
+8. `DROP`: keep the lifted wrist pose, open the hand, and let the can fall free
+9. `mj_step` advances physics and the viewer syncs
 
 ## What gets reused
 
@@ -158,6 +160,7 @@ Prefer two-sided proxy contact and log it when it appears. If `CLOSE` times out 
 - Contact classification for thumb-side, finger-side, and seat contact
 - Orientation-gated phase transitions for `PRE_GRASP` and `APPROACH`
 - Direct finger joint angle targets for `CLOSE` and `LIFT`
+- Post-lift `DROP` phase that opens the hand and releases the can
 - Stop-before-lift behavior only when no can contact was captured at all
 
 ## Success criteria

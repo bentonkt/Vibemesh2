@@ -38,7 +38,7 @@ from scripts.test_scene import FINGERS, build_scene  # noqa: E402
 OBJECT_ID = "005_tomato_soup_can"
 COLLISION_MESH_PATH = PROJECT_ROOT / "data" / "ycb" / "processed" / OBJECT_ID / "collision.obj"
 
-FREQ = 200.0
+FREQ = 1000.0
 DT = 1.0 / FREQ
 
 ARM_NU = 7  # xArm7 actuators
@@ -47,10 +47,11 @@ HAND_NU = 16  # LEAP hand actuators
 WORLD_Y_AXIS = np.array([0.0, 1.0, 0.0])
 HAND_OPEN = np.zeros(HAND_NU)
 
-SETTLE_STEPS = 800  # 4 s at 200 Hz
+SETTLE_STEPS = 4000  # 4 s at 1000 Hz
 APPROACH_OFFSET = 0.06
 PRE_GRASP_Z_OFFSET = 0.05
 LIFT_Z_OFFSET = 0.12
+DROP_STEPS = 2000  # 2 s at 1000 Hz
 SEAT_BIAS_STEPS = (0.0, 0.005, 0.010, 0.015)
 
 PRIMARY_FINGER_ANCHOR_PROXIES = (
@@ -75,7 +76,7 @@ SEAT_CONTACT_PROXIES = FINGER_CONTACT_PROXIES + THUMB_CONTACT_PROXIES + (
 # Phase transition thresholds
 POS_ERROR_THRESH = 0.01  # 1 cm
 ORI_ERROR_THRESH = 0.1  # radians
-PHASE_TIMEOUT_STEPS = 1000  # 5 s at 200 Hz
+PHASE_TIMEOUT_STEPS = 5000  # 5 s at 1000 Hz
 
 # Finger closed targets (radians)
 # fmt: off
@@ -89,7 +90,7 @@ FINGER_CLOSED = np.array([
 
 # Settle detection for fingers
 SETTLE_VEL_THRESH = 0.05
-SETTLE_STEPS_REQUIRED = 100  # 0.5 s at 200 Hz
+SETTLE_STEPS_REQUIRED = 500  # 0.5 s at 1000 Hz
 
 
 # ---------------------------------------------------------------------------
@@ -104,6 +105,7 @@ class Phase(enum.Enum):
     SEAT = "seat"
     CLOSE = "close"
     LIFT = "lift"
+    DROP = "drop"
     DONE = "done"
 
 
@@ -421,7 +423,7 @@ def main() -> None:
                     data.ctrl[:robot_nu] = configuration.q[:robot_nu]
                 else:
                     data.ctrl[:ARM_NU] = configuration.q[:ARM_NU]
-                    data.ctrl[ARM_NU:] = HAND_OPEN if phase == Phase.SEAT else FINGER_CLOSED
+                    data.ctrl[ARM_NU:] = HAND_OPEN if phase in (Phase.SEAT, Phase.DROP) else FINGER_CLOSED
 
                 # --- Phase transitions ---
                 phase_steps += 1
@@ -542,6 +544,9 @@ def main() -> None:
                                 f"Warning: {phase.value} timeout "
                                 f"(pos_err={pos_err:.4f}, ori_err={ori_err:.4f})"
                             )
+                        next_phase = Phase.DROP
+                elif phase == Phase.DROP:
+                    if phase_steps >= DROP_STEPS:
                         next_phase = Phase.DONE
 
                 if next_phase != phase:
@@ -559,6 +564,7 @@ def main() -> None:
                         Phase.SEAT,
                         Phase.CLOSE,
                         Phase.LIFT,
+                        Phase.DROP,
                         Phase.DONE,
                     ):
                         print(
