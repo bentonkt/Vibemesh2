@@ -5,6 +5,7 @@
 I / K:  move hand forward / back
 J / L:  move hand left / right
 U / O:  move hand up / down
+, / .:  roll hand left / right
 
 Usage:
     python scripts/arrow_key_grasp.py
@@ -55,6 +56,7 @@ FINGER_CLOSED = np.array([
 
 GRASP_SPEED = 1.5  # full open→close in ~0.67 s
 MOVE_SPEED = 0.3   # m/s for hand translation
+ROLL_SPEED = 1.0   # rad/s for hand roll
 
 # Windows virtual-key codes for movement (polled each physics step)
 _user32 = ctypes.windll.user32
@@ -66,12 +68,30 @@ MOVE_VK: dict[int, np.ndarray] = {
     0x55: np.array([ 0.0,  0.0,  1.0]),  # U — up
     0x4F: np.array([ 0.0,  0.0, -1.0]),  # O — down
 }
+ROLL_VK: dict[int, float] = {
+    0xBC: -1.0,  # , — roll left
+    0xBE:  1.0,  # . — roll right
+}
 
 OBJECT_SPAWN_Z = 0.12  # can center height above floor
 
 
 def _is_held(vk: int) -> bool:
     return bool(_user32.GetAsyncKeyState(vk) & 0x8000)
+
+
+def _rotate_quat(quat_wxyz: np.ndarray, axis: np.ndarray, angle: float) -> np.ndarray:
+    """Return quat_wxyz rotated by angle radians around axis."""
+    half = angle / 2.0
+    dq = np.array([np.cos(half), *(np.sin(half) * axis)])
+    w1, x1, y1, z1 = dq
+    w2, x2, y2, z2 = quat_wxyz
+    return np.array([
+        w1*w2 - x1*x2 - y1*y2 - z1*z2,
+        w1*x2 + x1*w2 + y1*z2 - z1*y2,
+        w1*y2 - x1*z2 + y1*w2 + z1*x2,
+        w1*z2 + x1*y2 - y1*x2 + z1*w2,
+    ])
 
 
 def main() -> None:
@@ -84,7 +104,7 @@ def main() -> None:
     print(f"Building scene with {OBJECT_ID}...")
     model, data, temp_dir = build_scene(OBJECT_ID)
     print(f"Scene loaded: {model.nbody} bodies, {model.ngeom} geoms")
-    print("Controls: ↓/↑ = close/open grasp | IJKL = move horizontal | U/O = move vertical")
+    print("Controls: ↓/↑ = close/open grasp | IJKL = move horizontal | U/O = move vertical | ,/. = roll")
 
     # Set arm to home and thumb to pre-opposed position, then forward kinematics
     data.qpos[:ARM_NU] = HOME_ARM_QPOS
@@ -151,6 +171,15 @@ def main() -> None:
                 )
                 if np.any(move_dir):
                     data.mocap_pos[mocap_id] += move_dir * MOVE_SPEED * rate.dt
+
+                # Roll hand around world X-axis (, / . keys)
+                roll = sum(v for k, v in ROLL_VK.items() if _is_held(k))
+                if roll:
+                    data.mocap_quat[mocap_id] = _rotate_quat(
+                        data.mocap_quat[mocap_id],
+                        np.array([1.0, 0.0, 0.0]),
+                        roll * ROLL_SPEED * rate.dt,
+                    )
 
                 # Solve IK: arm follows the red mocap box
                 configuration.update(data.qpos)
