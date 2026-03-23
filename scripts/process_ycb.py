@@ -92,14 +92,19 @@ def _load_mesh(path: Path) -> trimesh.Trimesh:
 
 
 def _find_best_mesh(object_dir: Path) -> Path:
-    """Pick the best mesh file from an object directory."""
-    # Prefer textured.obj, then any .obj, then .stl, then .ply
+    """Pick the best mesh file from an object directory (searches subdirs too).
+
+    The YCB download script extracts tarballs into subdirectories:
+      - berkeley_processed → {object_id}/meshes/textured.obj
+      - google_16k         → {object_id}/google_16k/textured.obj
+    """
+    # Preferred names in priority order, searched recursively
     for name in ("textured.obj", "nontextured.stl", "nontextured.ply"):
-        candidate = object_dir / name
-        if candidate.exists():
-            return candidate
-    # Fallback: any mesh file
-    for path in sorted(object_dir.iterdir()):
+        candidates = sorted(object_dir.rglob(name))
+        if candidates:
+            return candidates[0]
+    # Fallback: any mesh file anywhere under object_dir
+    for path in sorted(object_dir.rglob("*")):
         if path.suffix.lower() in MESH_SUFFIXES:
             return path
     raise FileNotFoundError(f"No mesh files in {object_dir}")

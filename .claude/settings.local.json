@@ -17,7 +17,9 @@
       "WebSearch",
       "Bash(grep -r key D:/Dev/Vibemesh2/mink/examples --include=*.py -l)",
       "Bash(grep -h \"^import\\\\|^from\" D:/Dev/Vibemesh2/scripts/*.py)",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)"
     ]
   }
 }
