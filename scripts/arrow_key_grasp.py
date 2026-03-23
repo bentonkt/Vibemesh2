@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Interactive grasp scene: use arrow keys to open/close the LEAP hand.
 
-Up arrow:   open grasp
-Down arrow: close grasp
+↓ / ↑:  close / open grasp
+I / K:  move hand forward / back
+J / L:  move hand left / right
+U / O:  move hand up / down
 
 Usage:
     python scripts/arrow_key_grasp.py
@@ -10,6 +12,8 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
+import ctypes
 import shutil
 import sys
 from pathlib import Path
@@ -26,8 +30,6 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.test_scene import build_scene  # noqa: E402
-
-OBJECT_ID = "005_tomato_soup_can"
 
 ARM_NU = 7
 HAND_NU = 16
@@ -52,19 +54,37 @@ FINGER_CLOSED = np.array([
 # fmt: on
 
 GRASP_SPEED = 1.5  # full open→close in ~0.67 s
+MOVE_SPEED = 0.3   # m/s for hand translation
 
-# GLFW keycodes
-KEY_UP = 265
-KEY_DOWN = 264
+# Windows virtual-key codes for movement (polled each physics step)
+_user32 = ctypes.windll.user32
+MOVE_VK: dict[int, np.ndarray] = {
+    0x49: np.array([ 1.0,  0.0,  0.0]),  # I — forward
+    0x4B: np.array([-1.0,  0.0,  0.0]),  # K — back
+    0x4A: np.array([ 0.0,  1.0,  0.0]),  # J — left
+    0x4C: np.array([ 0.0, -1.0,  0.0]),  # L — right
+    0x55: np.array([ 0.0,  0.0,  1.0]),  # U — up
+    0x4F: np.array([ 0.0,  0.0, -1.0]),  # O — down
+}
 
 OBJECT_SPAWN_Z = 0.12  # can center height above floor
 
 
+def _is_held(vk: int) -> bool:
+    return bool(_user32.GetAsyncKeyState(vk) & 0x8000)
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Interactive grasp scene")
+    parser.add_argument("--object", default="005_tomato_soup_can",
+                        help="YCB object ID to place under the hand (default: 005_tomato_soup_can)")
+    args = parser.parse_args()
+    OBJECT_ID = args.object
+
     print(f"Building scene with {OBJECT_ID}...")
     model, data, temp_dir = build_scene(OBJECT_ID)
     print(f"Scene loaded: {model.nbody} bodies, {model.ngeom} geoms")
-    print("Controls: Down arrow = close grasp | Up arrow = open grasp")
+    print("Controls: ↓/↑ = close/open grasp | IJKL = move horizontal | U/O = move vertical")
 
     # Set arm to home and thumb to pre-opposed position, then forward kinematics
     data.qpos[:ARM_NU] = HOME_ARM_QPOS
@@ -94,13 +114,13 @@ def main() -> None:
     limits = [mink.ConfigurationLimit(model=model)]
 
     grasp_t = 0.0       # 0 = open, 1 = closed
-    grasp_target = 0.0  # updated by key presses
+    grasp_target = 0.0  # set by arrow keys
 
     def key_callback(keycode: int) -> None:
         nonlocal grasp_target
-        if keycode == KEY_DOWN:
+        if keycode == 264:   # GLFW_KEY_DOWN
             grasp_target = 1.0
-        elif keycode == KEY_UP:
+        elif keycode == 265: # GLFW_KEY_UP
             grasp_target = 0.0
 
     try:
@@ -111,19 +131,26 @@ def main() -> None:
         ) as viewer:
             mujoco.mjv_defaultFreeCamera(model, viewer.cam)
 
-            # Initialize IK configuration from current pose
             configuration.update(data.qpos)
             posture_task.set_target_from_configuration(configuration)
-
-            # Place red mocap box at the current end-effector pose
             mink.move_mocap_to_frame(model, data, "target", "attachment_site", "site")
+            mocap_id = model.body("target").mocapid[0]
 
             rate = RateLimiter(frequency=200.0, warn=False)
             while viewer.is_running():
                 # Smooth grasp_t toward grasp_target
                 step = GRASP_SPEED * rate.dt
                 diff = grasp_target - grasp_t
-                grasp_t = float(np.clip(grasp_t + np.sign(diff) * min(step, abs(diff)), 0.0, 1.0))
+                grasp_t = float(np.clip(
+                    grasp_t + np.sign(diff) * min(step, abs(diff)), 0.0, 1.0
+                ))
+
+                # Translate mocap box from held movement keys (polled via Windows API)
+                move_dir = sum(
+                    (v for k, v in MOVE_VK.items() if _is_held(k)), np.zeros(3)
+                )
+                if np.any(move_dir):
+                    data.mocap_pos[mocap_id] += move_dir * MOVE_SPEED * rate.dt
 
                 # Solve IK: arm follows the red mocap box
                 configuration.update(data.qpos)
