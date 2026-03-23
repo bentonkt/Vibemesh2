@@ -43,14 +43,14 @@ HAND_OPEN_PRE = np.array([
     0.0, 0.0, 0.0, 0.0,   # finger 1: fully open
     0.0, 0.0, 0.0, 0.0,   # finger 2: fully open
     0.0, 0.0, 0.0, 0.0,   # finger 3: fully open
-    1.0, 0.0, 0.0, 0.0,   # thumb: PIP_4=1.0 (opposed), rest open
+    1.9, 0.0, 0.0, 0.0,   # thumb: PIP_4=1.9 (fully opposed), rest open
 ])
 
 FINGER_CLOSED = np.array([
     1.2, 0.0, 1.0, 1.0,   # finger 1: MCP-flex, spread, DIP, tip
     1.2, 0.0, 1.0, 1.0,   # finger 2: MCP-flex, spread, DIP, tip
     1.2, 0.0, 1.0, 1.0,   # finger 3: MCP-flex, spread, DIP, tip
-    1.0, 1.2, 0.5, 0.8,   # thumb: PIP_4, PIP, DIP, tip
+    1.9, 1.2, 0.5, 0.8,   # thumb: PIP_4 (fully opposed), PIP, DIP, tip
 ])
 # fmt: on
 
@@ -73,7 +73,7 @@ ROLL_VK: dict[int, float] = {
     0xBE:  1.0,  # . — roll right
 }
 
-OBJECT_SPAWN_Z = 0.12  # can center height above floor
+OBJECT_SPAWN_Z = 0.04  # can center height — low enough to clear the hand at home pose
 
 
 def _is_held(vk: int) -> bool:

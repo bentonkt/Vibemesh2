@@ -73,11 +73,11 @@ PROXY_GEOM_NAMES = {name for _, name, *_ in PROXY_GEOMS}
 # Hand-object contact pair parameters
 HAND_OBJECT_PAIR = {
     "condim": "6",
-    "friction": "4 0.05 0.005",
-    "solref": "0.005 1",
-    "solimp": "0.96 0.999 0.003",
-    "margin": "0.004",
-    "gap": "0.001",
+    "friction": "8 0.1 0.01",
+    "solref": "0.01 1",
+    "solimp": "0.96 0.999 0.006",
+    "margin": "0.008",
+    "gap": "0.002",
 }
 
 
