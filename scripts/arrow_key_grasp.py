@@ -98,6 +98,8 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Interactive grasp scene")
     parser.add_argument("--object", default="005_tomato_soup_can",
                         help="YCB object ID to place under the hand (default: 005_tomato_soup_can)")
+    parser.add_argument("--collision", action="store_true",
+                        help="Show collision meshes instead of visual meshes")
     args = parser.parse_args()
     OBJECT_ID = args.object
 
@@ -150,6 +152,9 @@ def main() -> None:
             key_callback=key_callback,
         ) as viewer:
             mujoco.mjv_defaultFreeCamera(model, viewer.cam)
+            if args.collision:
+                viewer.opt.geomgroup[2] = 0  # hide visual meshes
+                viewer.opt.geomgroup[3] = 1  # show collision meshes
 
             configuration.update(data.qpos)
             posture_task.set_target_from_configuration(configuration)
