@@ -22,19 +22,16 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 BASE_URL = "https://ycb-benchmarks.s3.amazonaws.com/data/berkeley"
 
-# Files to download per object (relative to each object's folder on the server)
+# Subdirectory on the server that contains the mesh files
+MESH_SUBDIR = "google_16k"
+
+# Files to download per object (relative to {object_id}/{MESH_SUBDIR}/ on the server)
 DOWNLOAD_FILES = [
     "textured.obj",
     "textured.mtl",
-    "textured_simple.obj",
     "nontextured.stl",
     "nontextured.ply",
-]
-
-# Texture files (try common names — not all objects have all of them)
-TEXTURE_FILES = [
     "texture_map.png",
-    "texture_map.jpg",
 ]
 
 # Full YCB object list (77 objects)
@@ -137,10 +134,10 @@ def download_object(object_id: str, models_dir: Path) -> bool:
     out_dir = models_dir / object_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    object_url = f"{BASE_URL}/{object_id}"
+    object_url = f"{BASE_URL}/{object_id}/{MESH_SUBDIR}"
     downloaded_any = False
 
-    for filename in DOWNLOAD_FILES + TEXTURE_FILES:
+    for filename in DOWNLOAD_FILES:
         dest = out_dir / filename
         if dest.exists():
             LOGGER.debug("  skip (exists): %s", filename)
