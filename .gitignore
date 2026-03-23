@@ -1,6 +1,8 @@
-# Raw and processed meshes (~1.8GB) — regenerate with: python scripts/process_ycb.py
+# Raw and processed meshes — regenerate with the process_*.py scripts
 models/ycb/
 data/ycb/
+data/hope/
+HOPE/
 
 # Python
 __pycache__/

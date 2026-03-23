@@ -8,7 +8,12 @@
       "Bash(python -c \"import uuid; print\\(uuid.uuid4\\(\\)\\)\")",
       "Bash(node -e \"const crypto = require\\(''crypto''\\); console.log\\(crypto.randomUUID\\(\\)\\)\")",
       "Bash(python scripts/_inspect_viewer.py)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(python -c \":*)",
+      "Bash(python scripts/process_hope.py --objects Corn)",
+      "Bash(rm:*)",
+      "Bash(python scripts/process_hope.py)",
+      "Bash(python scripts/arrow_key_grasp.py --object Corn)"
     ]
   }
 }

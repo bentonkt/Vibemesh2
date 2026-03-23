@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Interactive grasp scene: use arrow keys to open/close the LEAP hand.
 
-↓ / ↑:  close / open grasp
-I / K:  move hand forward / back
-J / L:  move hand left / right
-U / O:  move hand up / down
-, / .:  roll hand left / right
+down / up:  close / open grasp
+I / K:      move hand forward / back
+J / L:      move hand left / right
+U / O:      move hand up / down
+, / .:      roll hand left / right
 
 Usage:
     python scripts/arrow_key_grasp.py
@@ -106,7 +106,7 @@ def main() -> None:
     print(f"Building scene with {OBJECT_ID}...")
     model, data, temp_dir = build_scene(OBJECT_ID)
     print(f"Scene loaded: {model.nbody} bodies, {model.ngeom} geoms")
-    print("Controls: ↓/↑ = close/open grasp | IJKL = move horizontal | U/O = move vertical | ,/. = roll")
+    print("Controls: down/up = close/open grasp | IJKL = move horizontal | U/O = move vertical | ,/. = roll")
 
     # Set arm to home and thumb to pre-opposed position, then forward kinematics
     data.qpos[:ARM_NU] = HOME_ARM_QPOS
@@ -162,6 +162,7 @@ def main() -> None:
             mocap_id = model.body("target").mocapid[0]
 
             rate = RateLimiter(frequency=200.0, warn=False)
+            n_substeps = max(1, round(1.0 / (200.0 * model.opt.timestep)))
             while viewer.is_running():
                 # Smooth grasp_t toward grasp_target
                 step = GRASP_SPEED * rate.dt
@@ -202,7 +203,8 @@ def main() -> None:
                     (1.0 - grasp_t) * HAND_OPEN_PRE + grasp_t * FINGER_CLOSED
                 )
 
-                mujoco.mj_step(model, data)
+                for _ in range(n_substeps):
+                    mujoco.mj_step(model, data)
                 viewer.sync()
                 rate.sleep()
     finally:

@@ -50,7 +50,7 @@ FINGERS = ("tip_1", "tip_2", "tip_3", "th_tip")
 # Without explicit pairs, MuJoCo uses sqrt(f1*f2) for friction, so setting both
 # sides to the same value gives that value as the effective friction.
 MESH_CONTACT = {
-    "friction": np.array([8.0, 0.1, 0.01]),
+    "friction": np.array([1.6, 0.02, 0.002]),
     "condim": 6,
     "solref": np.array([0.01, 1.0]),
     "solimp": np.array([0.96, 0.999, 0.006, 0.5, 2.0]),
@@ -87,9 +87,15 @@ def build_robot_spec() -> mujoco.MjSpec:
 
 def build_scene(object_id: str) -> tuple[mujoco.MjModel, mujoco.MjData, Path]:
     """Build the full scene: robot + object in a temp directory."""
-    object_xml = PROJECT_ROOT / "mjcf" / "objects" / "ycb" / f"{object_id}.xml"
-    if not object_xml.exists():
-        raise FileNotFoundError(f"Object MJCF not found: {object_xml}")
+    _mjcf_root = PROJECT_ROOT / "mjcf" / "objects"
+    object_xml = next(
+        (p for p in [_mjcf_root / "ycb" / f"{object_id}.xml",
+                     _mjcf_root / "hope" / f"{object_id}.xml"]
+         if p.exists()),
+        None,
+    )
+    if object_xml is None:
+        raise FileNotFoundError(f"Object MJCF not found for '{object_id}' in ycb/ or hope/")
 
     temp_dir = Path(tempfile.mkdtemp(prefix="vibemesh_scene_"))
 

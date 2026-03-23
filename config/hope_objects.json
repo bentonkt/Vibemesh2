@@ -1,0 +1,310 @@
+[
+  {
+    "object_id": "AlphabetSoup",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.06605572600000001,
+      0.083554607,
+      0.071120544
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\AlphabetSoup\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\AlphabetSoup\\collision.obj"
+  },
+  {
+    "object_id": "BBQSauce",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.064632142,
+      0.148328948,
+      0.043479248
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\BBQSauce\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\BBQSauce\\collision.obj"
+  },
+  {
+    "object_id": "Butter",
+    "mass_kg": 0.454,
+    "bbox_extents_m": [
+      0.103301368,
+      0.052826382000000005,
+      0.02393628
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Butter\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Butter\\collision.obj"
+  },
+  {
+    "object_id": "Cherries",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.066167176,
+      0.058215894,
+      0.07112316800000001
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Cherries\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Cherries\\collision.obj"
+  },
+  {
+    "object_id": "ChocolatePudding",
+    "mass_kg": 0.102,
+    "bbox_extents_m": [
+      0.083497604,
+      0.049471748,
+      0.02992331
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\ChocolatePudding\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\ChocolatePudding\\collision.obj"
+  },
+  {
+    "object_id": "Cookies",
+    "mass_kg": 0.17,
+    "bbox_extents_m": [
+      0.122745602,
+      0.167242775,
+      0.040152161
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Cookies\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Cookies\\collision.obj"
+  },
+  {
+    "object_id": "Corn",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.066102089,
+      0.058039116,
+      0.070908508
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Corn\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Corn\\collision.obj"
+  },
+  {
+    "object_id": "CreamCheese",
+    "mass_kg": 0.227,
+    "bbox_extents_m": [
+      0.10359030899999999,
+      0.053205791,
+      0.024231145
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\CreamCheese\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\CreamCheese\\collision.obj"
+  },
+  {
+    "object_id": "GranolaBars",
+    "mass_kg": 0.175,
+    "bbox_extents_m": [
+      0.16533835600000002,
+      0.12400553099999999,
+      0.038738464
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\GranolaBars\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\GranolaBars\\collision.obj"
+  },
+  {
+    "object_id": "GreenBeans",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.06573177300000001,
+      0.057587413999999996,
+      0.07060791000000001
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\GreenBeans\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\GreenBeans\\collision.obj"
+  },
+  {
+    "object_id": "Ketchup",
+    "mass_kg": 0.397,
+    "bbox_extents_m": [
+      0.06451375999999999,
+      0.148607765,
+      0.043368194000000006
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Ketchup\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Ketchup\\collision.obj"
+  },
+  {
+    "object_id": "MacaroniAndCheese",
+    "mass_kg": 0.206,
+    "bbox_extents_m": [
+      0.123509075,
+      0.166256279,
+      0.040180847
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\MacaroniAndCheese\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\MacaroniAndCheese\\collision.obj"
+  },
+  {
+    "object_id": "Mayo",
+    "mass_kg": 0.443,
+    "bbox_extents_m": [
+      0.064541442,
+      0.147902367,
+      0.041031066000000005
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mayo\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mayo\\collision.obj"
+  },
+  {
+    "object_id": "Milk",
+    "mass_kg": 0.5,
+    "bbox_extents_m": [
+      0.072154594,
+      0.19035779600000002,
+      0.073262146
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Milk\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Milk\\collision.obj"
+  },
+  {
+    "object_id": "Mushrooms",
+    "mass_kg": 0.284,
+    "bbox_extents_m": [
+      0.065869892,
+      0.033321573,
+      0.07079861500000001
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mushrooms\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mushrooms\\collision.obj"
+  },
+  {
+    "object_id": "Mustard",
+    "mass_kg": 0.226,
+    "bbox_extents_m": [
+      0.06513324000000001,
+      0.160050453,
+      0.048574280000000004
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mustard\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Mustard\\collision.obj"
+  },
+  {
+    "object_id": "OrangeJuice",
+    "mass_kg": 0.45,
+    "bbox_extents_m": [
+      0.07158340099999999,
+      0.19248288700000002,
+      0.07278149400000002
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\OrangeJuice\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\OrangeJuice\\collision.obj"
+  },
+  {
+    "object_id": "Parmesan",
+    "mass_kg": 0.227,
+    "bbox_extents_m": [
+      0.071116898,
+      0.102862499,
+      0.06609286499999999
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Parmesan\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Parmesan\\collision.obj"
+  },
+  {
+    "object_id": "Peaches",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.065926113,
+      0.057781054,
+      0.070962158
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Peaches\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Peaches\\collision.obj"
+  },
+  {
+    "object_id": "PeasAndCarrots",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.065918171,
+      0.058512163,
+      0.070635712
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\PeasAndCarrots\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\PeasAndCarrots\\collision.obj"
+  },
+  {
+    "object_id": "Pineapple",
+    "mass_kg": 0.54,
+    "bbox_extents_m": [
+      0.065675091,
+      0.057622516000000006,
+      0.06959936600000001
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Pineapple\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Pineapple\\collision.obj"
+  },
+  {
+    "object_id": "Popcorn",
+    "mass_kg": 0.283,
+    "bbox_extents_m": [
+      0.12649192,
+      0.084977081,
+      0.03825241099999999
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Popcorn\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Popcorn\\collision.obj"
+  },
+  {
+    "object_id": "Raisins",
+    "mass_kg": 0.17,
+    "bbox_extents_m": [
+      0.085875091,
+      0.12317538400000001,
+      0.039751739
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Raisins\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Raisins\\collision.obj"
+  },
+  {
+    "object_id": "SaladDressing",
+    "mass_kg": 0.34,
+    "bbox_extents_m": [
+      0.064039015,
+      0.14744062800000002,
+      0.043695618000000006
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\SaladDressing\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\SaladDressing\\collision.obj"
+  },
+  {
+    "object_id": "Spaghetti",
+    "mass_kg": 0.454,
+    "bbox_extents_m": [
+      0.249880706,
+      0.049836838,
+      0.028492676
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Spaghetti\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Spaghetti\\collision.obj"
+  },
+  {
+    "object_id": "TomatoSauce",
+    "mass_kg": 0.425,
+    "bbox_extents_m": [
+      0.06646980200000001,
+      0.08284671,
+      0.07019821200000001
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\TomatoSauce\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\TomatoSauce\\collision.obj"
+  },
+  {
+    "object_id": "Tuna",
+    "mass_kg": 0.17,
+    "bbox_extents_m": [
+      0.065836746,
+      0.032570799,
+      0.070806427
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Tuna\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Tuna\\collision.obj"
+  },
+  {
+    "object_id": "Yogurt",
+    "mass_kg": 0.227,
+    "bbox_extents_m": [
+      0.06791541300000001,
+      0.05367699000000001,
+      0.067962006
+    ],
+    "visual_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Yogurt\\visual.obj",
+    "collision_mesh": "D:\\Dev\\Vibemesh2\\data\\hope\\processed\\Yogurt\\collision.obj"
+  }
+]
