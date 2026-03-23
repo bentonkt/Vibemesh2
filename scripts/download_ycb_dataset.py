@@ -1,10 +1,10 @@
 """Download YCB object meshes from the official YCB dataset server.
 
-Downloads the mesh files for each object into models/ycb/{object_id}/.
-Only downloads the files needed for MuJoCo simulation (textured OBJ + STL).
+Downloads the google_16k mesh tarball for each object and extracts the
+mesh files into models/ycb/{object_id}/ for use with process_ycb.py.
 
 Usage:
-    python scripts/download_ycb_dataset.py                  # all 77 objects
+    python scripts/download_ycb_dataset.py                  # all objects
     python scripts/download_ycb_dataset.py --objects 005_tomato_soup_can,025_mug
     python scripts/download_ycb_dataset.py --list           # print available objects
 """
@@ -13,6 +13,9 @@ from __future__ import annotations
 
 import argparse
 import logging
+import shutil
+import tarfile
+import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -20,19 +23,7 @@ LOGGER = logging.getLogger(__name__)
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
-BASE_URL = "https://ycb-benchmarks.s3.amazonaws.com/data/berkeley"
-
-# Subdirectory on the server that contains the mesh files
-MESH_SUBDIR = "google_16k"
-
-# Files to download per object (relative to {object_id}/{MESH_SUBDIR}/ on the server)
-DOWNLOAD_FILES = [
-    "textured.obj",
-    "textured.mtl",
-    "nontextured.stl",
-    "nontextured.ply",
-    "texture_map.png",
-]
+BASE_URL = "http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/data"
 
 # Full YCB object list (77 objects)
 ALL_OBJECTS = [
@@ -118,39 +109,48 @@ ALL_OBJECTS = [
 ]
 
 
-def _download_file(url: str, dest: Path) -> bool:
-    """Download url to dest. Returns True on success, False if 404."""
-    try:
-        urllib.request.urlretrieve(url, dest)
-        return True
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return False
-        raise
+def _already_downloaded(out_dir: Path) -> bool:
+    """Return True if the object directory already has a usable mesh."""
+    return any(out_dir.glob("*.obj")) or any(out_dir.glob("*.stl"))
 
 
-def download_object(object_id: str, models_dir: Path) -> bool:
-    """Download all mesh files for one object. Returns True if any file was downloaded."""
+def download_object(object_id: str, models_dir: Path) -> None:
+    """Download and extract the google_16k tarball for one object."""
     out_dir = models_dir / object_id
-    out_dir.mkdir(parents=True, exist_ok=True)
 
-    object_url = f"{BASE_URL}/{object_id}/{MESH_SUBDIR}"
-    downloaded_any = False
+    if _already_downloaded(out_dir):
+        LOGGER.info("  already downloaded, skipping")
+        return
 
-    for filename in DOWNLOAD_FILES:
-        dest = out_dir / filename
-        if dest.exists():
-            LOGGER.debug("  skip (exists): %s", filename)
-            continue
-        url = f"{object_url}/{filename}"
-        ok = _download_file(url, dest)
-        if ok:
-            LOGGER.info("  downloaded: %s", filename)
-            downloaded_any = True
-        else:
-            LOGGER.debug("  not found (skipping): %s", filename)
+    url = f"{BASE_URL}/google/{object_id}_google_16k.tgz"
 
-    return downloaded_any
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_path = Path(tmp)
+        tgz_path = tmp_path / f"{object_id}.tgz"
+
+        LOGGER.info("  downloading %s", url)
+        try:
+            urllib.request.urlretrieve(url, tgz_path)
+        except urllib.error.HTTPError as e:
+            raise RuntimeError(f"HTTP {e.code}: {url}") from e
+
+        with tarfile.open(tgz_path, "r:gz") as tar:
+            tar.extractall(tmp_path)
+
+        # Tarball extracts to {object_id}/google_16k/
+        extracted = tmp_path / object_id / "google_16k"
+        if not extracted.exists():
+            # Some tarballs may extract differently — find the first subdir with meshes
+            candidates = [p for p in tmp_path.rglob("*.obj")]
+            if not candidates:
+                raise RuntimeError(f"No .obj files found after extracting {url}")
+            extracted = candidates[0].parent
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        for f in extracted.iterdir():
+            shutil.copy2(f, out_dir / f.name)
+
+    LOGGER.info("  extracted to %s", out_dir)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -184,18 +184,20 @@ def main(argv: list[str] | None = None) -> int:
 
     LOGGER.info("Downloading %d objects to %s", len(object_ids), args.models_dir)
 
-    ok_count = 0
+    ok, failed = 0, []
     for obj_id in object_ids:
         LOGGER.info("Fetching %s ...", obj_id)
         try:
-            if download_object(obj_id, args.models_dir):
-                ok_count += 1
-            else:
-                LOGGER.warning("No files downloaded for %s (object may not exist)", obj_id)
+            download_object(obj_id, args.models_dir)
+            ok += 1
         except Exception as exc:
             LOGGER.error("FAIL %s: %s", obj_id, exc)
+            failed.append(obj_id)
 
-    LOGGER.info("Done: %d/%d objects downloaded", ok_count, len(object_ids))
+    LOGGER.info("Done: %d/%d objects downloaded", ok, len(object_ids))
+    if failed:
+        LOGGER.error("Failed: %s", ", ".join(failed))
+        return 1
     return 0
 
 
