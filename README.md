@@ -27,7 +27,7 @@ MuJoCo simulation environment for audio-based slip recovery using a LEAP Hand on
 ```bash
 git clone --recurse-submodules <repo-url>
 cd Vibemesh2
-pip install mujoco==3.6.0 mink==1.1.0 loop-rate-limiters trimesh
+pip install -r requirements.txt
 ```
 
 > The `mink` submodule (in `mink/`) provides the xArm 7 and LEAP Hand MJCF models and the IK library. It is included as a git submodule — make sure to clone with `--recurse-submodules`.
