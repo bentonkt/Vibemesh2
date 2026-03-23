@@ -6,7 +6,9 @@
       "Bash(find /d/Dev/Vibemesh2 -maxdepth 3 -type f \\\\\\(-name *.py -o -name *.md \\\\\\) ! -path */__pycache__/* ! -path */mink/*)",
       "Bash(python3:*)",
       "Bash(python -c \"import uuid; print\\(uuid.uuid4\\(\\)\\)\")",
-      "Bash(node -e \"const crypto = require\\(''crypto''\\); console.log\\(crypto.randomUUID\\(\\)\\)\")"
+      "Bash(node -e \"const crypto = require\\(''crypto''\\); console.log\\(crypto.randomUUID\\(\\)\\)\")",
+      "Bash(python scripts/_inspect_viewer.py)",
+      "Bash(git:*)"
     ]
   }
 }

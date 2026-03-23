@@ -10,3 +10,17 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# Brain (AI assistant notes — not part of the codebase)
+BRAIN-INDEX.md
+Assets/
+Execution-Plan/
+Experiments/
+Handoffs/
+Objects/
+Policy/
+Research/
+Robot/
+Simulation/
+Templates/
+.claude/agents/

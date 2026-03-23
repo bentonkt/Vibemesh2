@@ -1,59 +1,48 @@
-# Vibemesh2
+> Part of [[BRAIN-INDEX]]
 
-## Git Rules
+# Vibemesh2 - Agent Instructions
 
-- Never add any mention of Claude (Co-Authored-By, etc.) in commit messages.
+## What Is This Brain?
+This brain tracks the Vibemesh2 research project: a MuJoCo-based simulation environment for audio-based slip recovery using a LEAP Hand on an xArm manipulator. The goal is to build a sim-validated RL policy that detects object slip and executes corrective finger actions, eventually transferring to real hardware.
 
-## Project Overview
+## Owner
+- **Role**: Benton (Zyfex) — lead implementer
+- **Context**: MuJoCo setup is underway. YCB objects are stable in sim. Currently tuning friction so the LEAP hand can pick up objects. Uksang is the faculty advisor/mentor.
+- **Goals**: Complete object grasping, then train a reactive RL slip recovery policy ready for hardware transfer.
 
-MuJoCo simulation environment for robotic grasping with a LEAP hand and YCB/HOPE dataset objects.
+## Brain Structure
+- [[Simulation]] - MuJoCo env config, physics params, rendering
+- [[Robot]] - xArm + LEAP Hand models, kinematics, actuation
+- [[Objects]] - YCB/HOPE mesh library, per-object physics params
+- [[Policy]] - RL slip recovery design, reward, training, eval
+- [[Research]] - Papers, references, theory
+- [[Experiments]] - Experiment logs, results, ablations
+- [[Handoffs]] - Session continuity notes
+- [[Templates]] - Reusable note structures
 
-## Project Setup Document
+## Conventions
+- Use [[wikilinks]] for all cross-references between notes, but ONLY link to files that exist.
+- Keep files concise and actionable.
+- Check [[Assets]] for related diagrams or screenshots when working on any task.
+- Update Handoffs/ at the end of every work session.
+- Reference the [[Execution-Plan]] as the source of truth for phase order.
 
-See `VibeMesh 2.0 Mujoco Setup (2).pdf` in the repo root for the full project plan from Uksang covering:
-- Server access & environment consistency
-- MuJoCo installation & verification
-- Robot models (xArm + LEAP Hand) — models sourced from `mink/` submodule
-- Object setup (YCB/HOPE objects)
-- Contact & slip recovery (RL policy for reactive manipulation)
+## Assets
+The [[Assets]] folder holds images, videos, PDFs, and other media. When working on any task, check Assets/ for related materials. You can analyze images, read PDFs, and process any file dropped there.
 
-## Team & Roles
+## Agent Personas
+Available specialized agents in .claude/agents/:
+- [[builder]] - Implements simulation code, scripts, XML configs
+- [[researcher]] - Finds papers, synthesizes theory, tracks references
+- [[rl-engineer]] - Designs RL policy, reward functions, training pipelines
+- [[sim-engineer]] - Debugs physics, contact params, mesh quality issues
 
-- **Zyfex (Benton)** — implementing the MuJoCo setup, importing objects, tuning simulation parameters
-- **Uksang** — advisor/mentor providing guidance on simulation setup and contact modeling
-
-## Object Datasets
-
-- **YCB dataset**: 3D scanned objects common in robotics. Download script: `scripts/download_ycb_dataset.py` (originally from https://github.com/sea-bass/ycb-tools)
-- **HOPE dataset**: Available at https://drive.google.com/drive/folders/1Hj5K9RIdcNxBFiU8qG0-oL3Ryd9f2gOY
-
-## Physics Parameters Guidance (from Uksang)
-
-### Mass & Inertia
-- Each object needs a rough total mass (look up real values online)
-- Calculate inertia from geometry assuming homogeneous density
-- Values don't need to be scientifically precise, just approximately correct
-
-### Contact Parameters
-- MuJoCo uses penalty-based contact: overlapping meshes get "spring-like" penalty forces
-- Key parameters: `solref` and `solimp` in scene XML
-- **High stiffness** = more jittery (high penalty for overlap)
-- **Low stiffness** = more penetration but smoother contacts
-- Reference: https://mujoco.readthedocs.io/en/stable/computation/index.html
-
-### Mesh Quality
-- 3D scanned meshes can be messy, causing unrealistic contact behavior
-- If meshes look bad, use remeshing libraries: pymesh, trimesh, or open3d
-- Cleaner meshes = more stable contacts
-
-### Friction
-- Friction can be cranked up high without risking instability
-- Needed for the hand to actually grip and lift objects
-
-## Current Status (as of ~2/26/26)
-
-- YCB objects imported and resting stably in simulation
-- Contact jittering resolved by tuning contact parameters
-- Working on friction tuning so the LEAP hand can pick up objects
-- Have a script that closes fingers against thumb and moves the hand
-- Objects not yet being picked up successfully — friction too low
+## Commands
+- /init-braintree - Initialize a new brain
+- /resume-braintree - Resume from where you left off
+- /wrap-up-braintree - End session with proper handoff
+- /status-braintree - View progress dashboard
+- /plan-braintree [step] - Plan a specific step
+- /sprint-braintree - Plan the week's work
+- /sync-braintree - Health check and sync
+- /feature-braintree [name] - Plan a new feature
