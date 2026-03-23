@@ -46,43 +46,19 @@ OBJECT_SPAWN_Z = 0.12  # above the floor plane at z=0
 
 FINGERS = ("tip_1", "tip_2", "tip_3", "th_tip")
 
-# Hand proxy geom specs: (parent_body, geom_name, type, size, pos)
-PROXY_GEOMS = [
-    ("leap_right/palm_lower", "leap_right/proxy_palm", mujoco.mjtGeom.mjGEOM_BOX,
-     (0.035, 0.050, 0.020), (-0.0486, -0.0371, -0.0117)),
-    ("leap_right/fingertip", "leap_right/proxy_tip_1", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.011,) * 3, (0.0, -0.040, 0.015)),
-    ("leap_right/fingertip_2", "leap_right/proxy_tip_2", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.011,) * 3, (0.0, -0.040, 0.015)),
-    ("leap_right/fingertip_3", "leap_right/proxy_tip_3", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.011,) * 3, (0.0, -0.040, 0.015)),
-    ("leap_right/thumb_fingertip", "leap_right/proxy_th_tip", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.011,) * 3, (0.0, -0.045, -0.015)),
-    ("leap_right/dip", "leap_right/proxy_pad_1", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.010,) * 3, (0.010, -0.020, 0.012)),
-    ("leap_right/dip_2", "leap_right/proxy_pad_2", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.010,) * 3, (0.010, -0.020, 0.012)),
-    ("leap_right/dip_3", "leap_right/proxy_pad_3", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.010,) * 3, (0.010, -0.020, 0.012)),
-    ("leap_right/thumb_dip", "leap_right/proxy_th_pad", mujoco.mjtGeom.mjGEOM_SPHERE,
-     (0.0085,) * 3, (0.0, 0.0, 0.0)),
-]
-
-PROXY_GEOM_NAMES = {name for _, name, *_ in PROXY_GEOMS}
-
-# Hand-object contact pair parameters
-HAND_OBJECT_PAIR = {
-    "condim": "6",
-    "friction": "8 0.1 0.01",
-    "solref": "0.01 1",
-    "solimp": "0.96 0.999 0.006",
-    "margin": "0.008",
-    "gap": "0.002",
+# Contact properties applied to LEAP mesh geoms and the object geom post-load.
+# Without explicit pairs, MuJoCo uses sqrt(f1*f2) for friction, so setting both
+# sides to the same value gives that value as the effective friction.
+MESH_CONTACT = {
+    "friction": np.array([8.0, 0.1, 0.01]),
+    "condim": 6,
+    "solref": np.array([0.01, 1.0]),
+    "solimp": np.array([0.96, 0.999, 0.006, 0.5, 2.0]),
 }
 
 
 def build_robot_spec() -> mujoco.MjSpec:
-    """Compose xArm + LEAP hand with proxy collision geoms and finger mocap targets."""
+    """Compose xArm + LEAP hand with finger mocap targets."""
     arm = mujoco.MjSpec.from_file(_ARM_XML.as_posix())
     hand = mujoco.MjSpec.from_file(_HAND_XML.as_posix())
 
@@ -97,14 +73,6 @@ def build_robot_spec() -> mujoco.MjSpec:
     home_key = arm.key("home")
     arm.delete(home_key)
     arm.add_key(name="home", qpos=HOME_QPOS)
-
-    # Add proxy collision geoms to hand
-    for body_name, geom_name, geom_type, size, pos in PROXY_GEOMS:
-        body = arm.body(body_name)
-        body.add_geom(
-            name=geom_name, type=geom_type, size=size, pos=pos,
-            contype=2, conaffinity=1, group=3, rgba=(0.1, 0.9, 0.2, 0.2),
-        )
 
     # Add finger mocap targets
     for finger in FINGERS:
@@ -138,15 +106,7 @@ def build_scene(object_id: str) -> tuple[mujoco.MjModel, mujoco.MjData, Path]:
             if f.is_file():
                 shutil.copy2(f, assets_dir / f.name)
 
-    # Hand-object contact pairs
-    object_geom = f"{object_id}_collision_geom"
-    pair_attrs = " ".join(f'{k}="{v}"' for k, v in HAND_OBJECT_PAIR.items())
-    pair_lines = "\n".join(
-        f'    <pair geom1="{proxy}" geom2="{object_geom}" {pair_attrs}/>'
-        for proxy in sorted(PROXY_GEOM_NAMES)
-    )
-
-    # Compose scene XML — floor stays at z=0, arm base sits on floor
+    # Compose scene XML
     scene_xml = f"""\
 <mujoco model="vibemesh_test_scene">
   <compiler angle="radian" inertiafromgeom="true"/>
@@ -158,10 +118,6 @@ def build_scene(object_id: str) -> tuple[mujoco.MjModel, mujoco.MjData, Path]:
   <include file="{robot_xml_path.resolve()}"/>
   <include file="{object_xml.resolve()}"/>
 
-  <contact>
-{pair_lines}
-  </contact>
-
   <worldbody>
     <light name="key_light" pos="0 0 3" dir="0 0 -1" directional="true"/>
   </worldbody>
@@ -172,20 +128,29 @@ def build_scene(object_id: str) -> tuple[mujoco.MjModel, mujoco.MjData, Path]:
 
     model = mujoco.MjModel.from_xml_path(scene_path.as_posix())
 
-    # Disable LEAP mesh collisions (only proxies should collide)
+    # Apply contact properties to LEAP hand mesh collision geoms
     for geom_id in range(model.ngeom):
         body_name = model.body(int(model.geom_bodyid[geom_id])).name or ""
-        geom_name = model.geom(geom_id).name or ""
         if not body_name.startswith("leap_right/"):
-            continue
-        if geom_name in PROXY_GEOM_NAMES:
             continue
         if int(model.geom_type[geom_id]) != int(mujoco.mjtGeom.mjGEOM_MESH):
             continue
         if int(model.geom_group[geom_id]) != 3:
             continue
-        model.geom_contype[geom_id] = 0
-        model.geom_conaffinity[geom_id] = 0
+        model.geom_condim[geom_id] = MESH_CONTACT["condim"]
+        model.geom_friction[geom_id, :3] = MESH_CONTACT["friction"]
+        model.geom_solref[geom_id, :2] = MESH_CONTACT["solref"]
+        model.geom_solimp[geom_id, :5] = MESH_CONTACT["solimp"]
+
+    # Match object geom friction so geometric mean equals the target value
+    obj_geom_id = mujoco.mj_name2id(
+        model, mujoco.mjtObj.mjOBJ_GEOM, f"{object_id}_collision_geom"
+    )
+    if obj_geom_id >= 0:
+        model.geom_condim[obj_geom_id] = MESH_CONTACT["condim"]
+        model.geom_friction[obj_geom_id, :3] = MESH_CONTACT["friction"]
+        model.geom_solref[obj_geom_id, :2] = MESH_CONTACT["solref"]
+        model.geom_solimp[obj_geom_id, :5] = MESH_CONTACT["solimp"]
 
     data = mujoco.MjData(model)
 
