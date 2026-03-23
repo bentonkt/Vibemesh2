@@ -15,7 +15,7 @@
   </asset>
   <worldbody>
     <body name="065-a_cups" pos="0 0 0">
-      <joint name="065-a_cups_freejoint" type="free" damping="0.1" />
+      <joint name="065-a_cups_freejoint" type="free" damping="0.001" />
       <geom name="065-a_cups_visual_geom" class="065-a_cups_visual" type="mesh" mesh="065-a_cups_visual_mesh" />
       <geom name="065-a_cups_collision_geom" class="065-a_cups_collision" type="mesh" mesh="065-a_cups_collision_mesh" mass="0.0233485" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
     </body>

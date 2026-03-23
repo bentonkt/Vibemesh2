@@ -15,7 +15,7 @@
   </asset>
   <worldbody>
     <body name="007_tuna_fish_can" pos="0 0 0">
-      <joint name="007_tuna_fish_can_freejoint" type="free" damping="0.1" />
+      <joint name="007_tuna_fish_can_freejoint" type="free" damping="0.001" />
       <geom name="007_tuna_fish_can_visual_geom" class="007_tuna_fish_can_visual" type="mesh" mesh="007_tuna_fish_can_visual_mesh" />
       <geom name="007_tuna_fish_can_collision_geom" class="007_tuna_fish_can_collision" type="mesh" mesh="007_tuna_fish_can_collision_mesh" mass="0.171" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
     </body>

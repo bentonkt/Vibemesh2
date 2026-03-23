@@ -225,7 +225,7 @@ def _write_mjcf(
     worldbody = ET.SubElement(root, "worldbody")
     body = ET.SubElement(worldbody, "body", attrib={"name": object_id, "pos": "0 0 0"})
     ET.SubElement(body, "joint", attrib={
-        "name": f"{object_id}_freejoint", "type": "free", "damping": "0.1",
+        "name": f"{object_id}_freejoint", "type": "free", "damping": "0.001",
     })
     ET.SubElement(body, "geom", attrib={
         "name": f"{object_id}_visual_geom",

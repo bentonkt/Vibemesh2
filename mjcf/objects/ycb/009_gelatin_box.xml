@@ -15,7 +15,7 @@
   </asset>
   <worldbody>
     <body name="009_gelatin_box" pos="0 0 0">
-      <joint name="009_gelatin_box_freejoint" type="free" damping="0.1" />
+      <joint name="009_gelatin_box_freejoint" type="free" damping="0.001" />
       <geom name="009_gelatin_box_visual_geom" class="009_gelatin_box_visual" type="mesh" mesh="009_gelatin_box_visual_mesh" />
       <geom name="009_gelatin_box_collision_geom" class="009_gelatin_box_collision" type="mesh" mesh="009_gelatin_box_collision_mesh" mass="0.097" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
     </body>

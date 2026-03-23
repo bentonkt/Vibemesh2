@@ -15,7 +15,7 @@
   </asset>
   <worldbody>
     <body name="012_strawberry" pos="0 0 0">
-      <joint name="012_strawberry_freejoint" type="free" damping="0.1" />
+      <joint name="012_strawberry_freejoint" type="free" damping="0.001" />
       <geom name="012_strawberry_visual_geom" class="012_strawberry_visual" type="mesh" mesh="012_strawberry_visual_mesh" />
       <geom name="012_strawberry_collision_geom" class="012_strawberry_collision" type="mesh" mesh="012_strawberry_collision_mesh" mass="0.0483234" condim="3" friction="0.8 0.01 0.001" solref="0.008 1" solimp="0.97 0.995 0.001" margin="0.001" gap="0" priority="1" />
     </body>
