@@ -1,0 +1,15 @@
+# Normalize line endings: LF in repo, platform-native on checkout
+* text=auto eol=lf
+*.xml text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+
+# Binaries — no line ending conversion
+*.stl binary
+*.obj binary
+*.ply binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
