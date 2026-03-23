@@ -25,9 +25,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 BASE_URL = "http://ycb-benchmarks.s3-website-us-east-1.amazonaws.com/data"
 
-# Full YCB object list (77 objects)
+# Objects with google_16k scans available on the YCB S3 server.
+# Some objects (cups variants, toy airplanes, lego duplo, marbles, etc.) only
+# have Berkeley scans and are excluded here.
 ALL_OBJECTS = [
-    "001_chips_can",
     "002_master_chef_can",
     "003_cracker_box",
     "004_sugar_box",
@@ -62,9 +63,7 @@ ALL_OBJECTS = [
     "037_scissors",
     "038_padlock",
     "040_large_marker",
-    "041_small_marker",
     "042_adjustable_wrench",
-    "043_phillips_head_screwdriver",
     "044_flat_screwdriver",
     "048_hammer",
     "050_medium_clamp",
@@ -79,32 +78,7 @@ ALL_OBJECTS = [
     "059_chain",
     "061_foam_brick",
     "062_dice",
-    "063_a_marbles",
-    "065_a_cups",
-    "065_b_cups",
-    "065_c_cups",
-    "065_d_cups",
-    "065_e_cups",
-    "065_f_cups",
-    "065_g_cups",
-    "065_h_cups",
-    "065_i_cups",
-    "065_j_cups",
-    "070_a_colored_wood_blocks",
-    "070_b_colored_wood_blocks",
     "071_nine_hole_peg_test",
-    "072_a_toy_airplane",
-    "072_b_toy_airplane",
-    "072_c_toy_airplane",
-    "072_d_toy_airplane",
-    "072_e_toy_airplane",
-    "073_a_lego_duplo",
-    "073_b_lego_duplo",
-    "073_c_lego_duplo",
-    "073_d_lego_duplo",
-    "073_e_lego_duplo",
-    "073_f_lego_duplo",
-    "073_g_lego_duplo",
     "077_rubiks_cube",
 ]
 
@@ -132,6 +106,8 @@ def download_object(object_id: str, models_dir: Path) -> None:
         try:
             urllib.request.urlretrieve(url, tgz_path)
         except urllib.error.HTTPError as e:
+            if e.code == 404:
+                raise RuntimeError(f"No google_16k scan available for this object (404)") from e
             raise RuntimeError(f"HTTP {e.code}: {url}") from e
 
         with tarfile.open(tgz_path, "r:gz") as tar:
