@@ -13,7 +13,9 @@
       "Bash(python scripts/process_hope.py --objects Corn)",
       "Bash(rm:*)",
       "Bash(python scripts/process_hope.py)",
-      "Bash(python scripts/arrow_key_grasp.py --object Corn)"
+      "Bash(python scripts/arrow_key_grasp.py --object Corn)",
+      "WebSearch",
+      "Bash(grep -r key D:/Dev/Vibemesh2/mink/examples --include=*.py -l)"
     ]
   }
 }

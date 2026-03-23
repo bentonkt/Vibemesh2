@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Interactive grasp scene: use arrow keys to open/close the LEAP hand.
+"""Interactive grasp scene: keyboard-controlled LEAP hand.
 
-down / up:  close / open grasp
-I / K:      move hand forward / back
-J / L:      move hand left / right
-U / O:      move hand up / down
-, / .:      roll hand left / right
+G / R:          close / open grasp
+up / down:      move hand forward / back
+left / right:   move hand left / right
+PgUp / PgDn:    move hand up / down
+, / .:          roll hand left / right
 
 Usage:
     python scripts/arrow_key_grasp.py
@@ -58,19 +58,23 @@ GRASP_SPEED = 1.5  # full open→close in ~0.67 s
 MOVE_SPEED = 0.3   # m/s for hand translation
 ROLL_SPEED = 1.0   # rad/s for hand roll
 
-# Windows virtual-key codes for movement (polled each physics step)
+# Windows virtual-key codes — all polled each physics step to bypass MuJoCo's handlers
 _user32 = ctypes.windll.user32
 MOVE_VK: dict[int, np.ndarray] = {
-    0x49: np.array([ 1.0,  0.0,  0.0]),  # I — forward
-    0x4B: np.array([-1.0,  0.0,  0.0]),  # K — back
-    0x4A: np.array([ 0.0,  1.0,  0.0]),  # J — left
-    0x4C: np.array([ 0.0, -1.0,  0.0]),  # L — right
-    0x55: np.array([ 0.0,  0.0,  1.0]),  # U — up
-    0x4F: np.array([ 0.0,  0.0, -1.0]),  # O — down
+    0x26: np.array([ 1.0,  0.0,  0.0]),  # up arrow    — forward
+    0x28: np.array([-1.0,  0.0,  0.0]),  # down arrow  — back
+    0x25: np.array([ 0.0,  1.0,  0.0]),  # left arrow  — left
+    0x27: np.array([ 0.0, -1.0,  0.0]),  # right arrow — right
+    0x21: np.array([ 0.0,  0.0,  1.0]),  # PgUp        — up
+    0x22: np.array([ 0.0,  0.0, -1.0]),  # PgDn        — down
 }
 ROLL_VK: dict[int, float] = {
     0xBC: -1.0,  # , — roll left
     0xBE:  1.0,  # . — roll right
+}
+GRASP_VK = {
+    0x47: 1.0,   # G — close
+    0x52: 0.0,   # R — open
 }
 
 OBJECT_SPAWN_Z = 0.04  # can center height — low enough to clear the hand at home pose
@@ -106,7 +110,7 @@ def main() -> None:
     print(f"Building scene with {OBJECT_ID}...")
     model, data, temp_dir = build_scene(OBJECT_ID)
     print(f"Scene loaded: {model.nbody} bodies, {model.ngeom} geoms")
-    print("Controls: down/up = close/open grasp | IJKL = move horizontal | U/O = move vertical | ,/. = roll")
+    print("Controls: G/R = close/open grasp | arrows = move horizontal | PgUp/PgDn = vertical | ,/. = roll")
 
     # Set arm to home and thumb to pre-opposed position, then forward kinematics
     data.qpos[:ARM_NU] = HOME_ARM_QPOS
@@ -136,20 +140,12 @@ def main() -> None:
     limits = [mink.ConfigurationLimit(model=model)]
 
     grasp_t = 0.0       # 0 = open, 1 = closed
-    grasp_target = 0.0  # set by arrow keys
-
-    def key_callback(keycode: int) -> None:
-        nonlocal grasp_target
-        if keycode == 264:   # GLFW_KEY_DOWN
-            grasp_target = 1.0
-        elif keycode == 265: # GLFW_KEY_UP
-            grasp_target = 0.0
+    grasp_target = 0.0  # updated by G/R polling
 
     try:
         with mujoco.viewer.launch_passive(
             model=model, data=data,
             show_left_ui=False, show_right_ui=False,
-            key_callback=key_callback,
         ) as viewer:
             mujoco.mjv_defaultFreeCamera(model, viewer.cam)
             if args.collision:
@@ -164,6 +160,11 @@ def main() -> None:
             rate = RateLimiter(frequency=200.0, warn=False)
             n_substeps = max(1, round(1.0 / (200.0 * model.opt.timestep)))
             while viewer.is_running():
+                # G/R keys set grasp target (polled to bypass MuJoCo handlers)
+                for vk, target in GRASP_VK.items():
+                    if _is_held(vk):
+                        grasp_target = target
+
                 # Smooth grasp_t toward grasp_target
                 step = GRASP_SPEED * rate.dt
                 diff = grasp_target - grasp_t
