@@ -3,3 +3,4 @@ mink==1.1.0
 loop-rate-limiters==1.2.0
 trimesh==4.11.4
 numpy
+gymnasium>=0.29
