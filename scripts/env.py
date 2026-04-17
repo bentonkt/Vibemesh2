@@ -2,11 +2,14 @@
 """Barebones Gymnasium Env wrapping build_scene for Phase 4 RL work.
 
 Minimal implementation of item 3 from Uksang's Phase 4 TODO (2026-04-16):
-- reset() spawns the object, runs an 800-step settle, executes a hardcoded
-  close grasp, returns the first observation.
+- reset() replays captured keyframes to achieve a grasp, then returns
+  the first observation.
 - step() runs n_substeps of mj_step, computes reward, checks termination.
 - Episode terminates if the object drops below drop_z or step_count hits
   timeout_steps.
+
+Keyframes are captured interactively via scripts/capture_keyframes.py
+and saved to config/grasp_keyframes.json.
 
 Usage:
     from scripts.env import GraspEnv
@@ -17,6 +20,7 @@ Usage:
 
 from __future__ import annotations
 
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -30,13 +34,13 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.test_scene import build_scene  # noqa: E402
-from scripts.hardcoded_grasp import FINGER_CLOSED  # noqa: E402
 
-ARM_NU = 7
-HAND_NU = 16
-SETTLE_STEPS = 800
-CLOSE_STEPS = 500
-OBJECT_SPAWN_QPOS = np.array([0.4, 0.0, 0.12, 1.0, 0.0, 0.0, 0.0])
+DEFAULT_KEYFRAMES = PROJECT_ROOT / "config" / "grasp_keyframes.json"
+
+# Steps to interpolate between each pair of keyframes during replay
+INTERP_STEPS_PER_KF = 200  # 1 second at 200 Hz
+# Physics substeps per interpolation step (matches arrow_key_grasp)
+REPLAY_SUBSTEPS = 5
 
 
 class GraspEnv(gym.Env):
@@ -48,8 +52,10 @@ class GraspEnv(gym.Env):
         n_substeps: int = 5,
         timeout_steps: int = 500,
         drop_z: float = 0.05,
+        keyframes_path: str | Path | None = None,
     ) -> None:
         super().__init__()
+        self._object_id = object_id
         self.n_substeps = n_substeps
         self.timeout_steps = timeout_steps
         self.drop_z = drop_z
@@ -75,23 +81,59 @@ class GraspEnv(gym.Env):
         )
         self._step_count = 0
 
+        # Load keyframes
+        kf_path = Path(keyframes_path) if keyframes_path else DEFAULT_KEYFRAMES
+        if kf_path.exists():
+            raw = json.loads(kf_path.read_text(encoding="utf-8"))
+            self._keyframe_ctrls = [
+                np.array(kf["ctrl"], dtype=np.float64) for kf in raw["keyframes"]
+            ]
+        else:
+            self._keyframe_ctrls = []
+
     def _obs(self) -> np.ndarray:
         return self.data.site_xpos[self._ee_site].astype(np.float32)
+
+    def _replay_keyframes(self) -> None:
+        """Interpolate through captured keyframes to achieve the grasp."""
+        if not self._keyframe_ctrls:
+            return
+
+        # Start from current ctrl
+        current_ctrl = self.data.ctrl.copy()
+
+        for target_ctrl in self._keyframe_ctrls:
+            start_ctrl = current_ctrl.copy()
+            for step in range(INTERP_STEPS_PER_KF):
+                t = (step + 1) / INTERP_STEPS_PER_KF
+                self.data.ctrl[:] = (1.0 - t) * start_ctrl + t * target_ctrl
+                for _ in range(REPLAY_SUBSTEPS):
+                    mujoco.mj_step(self.model, self.data)
+            current_ctrl = target_ctrl.copy()
+
+        # Hold final keyframe briefly to let contacts settle
+        for _ in range(100):
+            for _ in range(REPLAY_SUBSTEPS):
+                mujoco.mj_step(self.model, self.data)
 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         mujoco.mj_resetDataKeyframe(self.model, self.data, self._home_key)
-        self.data.qpos[self._obj_qadr:self._obj_qadr + 7] = OBJECT_SPAWN_QPOS
+
+        # Place object below the hand (same XY as EE, low Z)
+        mujoco.mj_forward(self.model, self.data)
+        hand_xy = self.data.site_xpos[self._ee_site][:2].copy()
+        self.data.qpos[self._obj_qadr:self._obj_qadr + 3] = [
+            hand_xy[0], hand_xy[1], 0.04,
+        ]
+        self.data.qpos[self._obj_qadr + 3:self._obj_qadr + 7] = [1, 0, 0, 0]
+
+        # Set initial ctrl to home (arm + hand open pre-opposed)
+        self.data.ctrl[:] = self.data.qpos[: self.model.nu]
         mujoco.mj_forward(self.model, self.data)
 
-        # Settle: let physics come to rest with ctrl at home
-        for _ in range(SETTLE_STEPS):
-            mujoco.mj_step(self.model, self.data)
-
-        # Hardcoded close grasp: set finger targets and run physics
-        self.data.ctrl[ARM_NU:ARM_NU + HAND_NU] = FINGER_CLOSED
-        for _ in range(CLOSE_STEPS):
-            mujoco.mj_step(self.model, self.data)
+        # Replay captured keyframes to achieve grasp
+        self._replay_keyframes()
 
         self._step_count = 0
         return self._obs(), {}
