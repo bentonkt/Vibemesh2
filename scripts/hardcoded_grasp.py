@@ -223,9 +223,9 @@ def _compute_contact_anchor_local(model: mujoco.MjModel, data: mujoco.MjData) ->
 
 
 def _classify_can_contacts(
-    model: mujoco.MjModel, data: mujoco.MjData
+    model: mujoco.MjModel, data: mujoco.MjData, object_id: str = OBJECT_ID
 ) -> tuple[bool, bool, bool, tuple[str, ...]]:
-    can_geom = f"{OBJECT_ID}_collision_geom"
+    can_geom = f"{object_id}_collision_geom"
     contact_names = set()
 
     for i in range(data.ncon):
@@ -284,6 +284,210 @@ def _compute_grasp_plan(
         print(f"{phase.value} waypoint: {_format_vec(waypoints[phase])}")
 
     return waypoints, target_quat, base_close_pos, z_axis
+
+
+# ---------------------------------------------------------------------------
+# Headless initial grasp (for use by GraspEnv)
+# ---------------------------------------------------------------------------
+
+
+def execute_initial_grasp(
+    model: mujoco.MjModel,
+    data: mujoco.MjData,
+    object_id: str = OBJECT_ID,
+    settle_steps: int = 800,
+) -> None:
+    """Run SETTLE → PRE_GRASP → APPROACH → SEAT → CLOSE headlessly.
+
+    Drives the arm via IK to approach the object, seats the hand against it,
+    and closes the fingers until contact settles. No viewer, no rate limiter.
+    Modifies ``data`` in place; ``model`` is read-only.
+    """
+    collision_path = (
+        PROJECT_ROOT / "data" / "ycb" / "processed" / object_id / "collision.obj"
+    )
+    can_center_local, _ = _load_collision_mesh_bounds(collision_path)
+    contact_anchor_local = _compute_contact_anchor_local(model, data)
+
+    # -- IK setup (mirrors main) --
+    configuration = mink.Configuration(model)
+    ee_task = mink.FrameTask(
+        frame_name="attachment_site",
+        frame_type="site",
+        position_cost=1.0,
+        orientation_cost=1.0,
+        lm_damping=1.0,
+    )
+    posture_task = mink.PostureTask(model=model, cost=5e-2)
+    finger_tasks = [
+        mink.RelativeFrameTask(
+            frame_name=f"leap_right/{finger}",
+            frame_type="site",
+            root_name="leap_right/palm_lower",
+            root_type="body",
+            position_cost=1.0,
+            orientation_cost=0.0,
+            lm_damping=1e-3,
+        )
+        for finger in FINGERS
+    ]
+    limits = [mink.ConfigurationLimit(model=model)]
+
+    # -- Initialize --
+    configuration.update(data.qpos)
+    posture_task.set_target_from_configuration(configuration)
+    mink.move_mocap_to_frame(model, data, "target", "attachment_site", "site")
+    for finger in FINGERS:
+        mink.move_mocap_to_frame(
+            model, data, f"{finger}_target", f"leap_right/{finger}", "site"
+        )
+    T_palm_prev = configuration.get_transform_frame_to_world(
+        "leap_right/palm_lower", "body"
+    )
+    data.ctrl[: model.nu] = data.qpos[: model.nu]
+
+    # -- State machine --
+    phase = Phase.SETTLE
+    phase_steps = 0
+    settle_count = 0
+    waypoints: dict[Phase, np.ndarray] = {}
+    base_close_pos: np.ndarray | None = None
+    z_axis: np.ndarray | None = None
+    seat_bias_index = 0
+    grasp_contact_seen = False
+    two_sided_contact_seen = False
+
+    mocap_id_ee = model.body("target").mocapid[0]
+    target_quat = data.mocap_quat[mocap_id_ee].copy()
+
+    while True:
+        use_finger_ik = phase in (Phase.SETTLE, Phase.PRE_GRASP, Phase.APPROACH)
+        active_tasks = (
+            [ee_task, posture_task, *finger_tasks]
+            if use_finger_ik
+            else [ee_task, posture_task]
+        )
+
+        # -- IK solve --
+        configuration.update(data.qpos)
+        T_wt = mink.SE3.from_mocap_name(model, data, "target")
+        ee_task.set_target(T_wt)
+
+        T_palm = configuration.get_transform_frame_to_world(
+            "leap_right/palm_lower", "body"
+        )
+        T_delta = T_palm @ T_palm_prev.inverse()
+        T_palm_prev = T_palm.copy()
+
+        if use_finger_ik:
+            for finger in FINGERS:
+                fmid = model.body(f"{finger}_target").mocapid[0]
+                T_w_mocap = mink.SE3.from_mocap_id(data, fmid)
+                T_new = T_delta @ T_w_mocap
+                data.mocap_pos[fmid] = T_new.translation()
+                data.mocap_quat[fmid] = T_new.rotation().wxyz
+
+            world_to_palm = configuration.get_transform_frame_to_world(
+                "leap_right/palm_lower", "body"
+            ).inverse()
+            for finger, task in zip(FINGERS, finger_tasks):
+                T_world_target = mink.SE3.from_mocap_name(
+                    model, data, f"{finger}_target"
+                )
+                task.set_target(world_to_palm @ T_world_target)
+
+        vel = mink.solve_ik(
+            configuration, active_tasks, DT, "daqp", damping=1e-3, limits=limits
+        )
+        configuration.integrate_inplace(vel, DT)
+
+        # -- Write ctrl --
+        if use_finger_ik:
+            data.ctrl[: model.nu] = configuration.q[: model.nu]
+        else:
+            data.ctrl[:ARM_NU] = configuration.q[:ARM_NU]
+            data.ctrl[ARM_NU:] = (
+                HAND_OPEN if phase == Phase.SEAT else FINGER_CLOSED
+            )
+
+        # -- Phase transitions --
+        phase_steps += 1
+        target_pos = data.mocap_pos[mocap_id_ee].copy()
+        pos_err = _ee_pos_error(model, data, target_pos)
+        ori_err = _ee_ori_error(model, data, target_quat)
+        thumb_contact, finger_contact, seat_contact, _ = _classify_can_contacts(
+            model, data, object_id
+        )
+        grasp_contact_seen = grasp_contact_seen or seat_contact
+        two_sided_contact_seen = two_sided_contact_seen or (
+            thumb_contact and finger_contact
+        )
+
+        next_phase = phase
+
+        if phase == Phase.SETTLE:
+            if phase_steps >= settle_steps:
+                seat_bias_index = 0
+                waypoints, target_quat, base_close_pos, z_axis = (
+                    _compute_grasp_plan(
+                        model, data, can_center_local, contact_anchor_local
+                    )
+                )
+                next_phase = Phase.PRE_GRASP
+
+        elif phase == Phase.PRE_GRASP:
+            reached = pos_err < POS_ERROR_THRESH and ori_err < ORI_ERROR_THRESH
+            if reached or phase_steps >= PHASE_TIMEOUT_STEPS:
+                next_phase = Phase.APPROACH
+
+        elif phase == Phase.APPROACH:
+            reached = pos_err < POS_ERROR_THRESH and ori_err < ORI_ERROR_THRESH
+            if reached or phase_steps >= PHASE_TIMEOUT_STEPS:
+                next_phase = Phase.SEAT
+
+        elif phase == Phase.SEAT:
+            reached = pos_err < POS_ERROR_THRESH and ori_err < ORI_ERROR_THRESH
+            if seat_contact:
+                next_phase = Phase.CLOSE
+            elif reached and base_close_pos is not None and z_axis is not None:
+                if seat_bias_index + 1 < len(SEAT_BIAS_STEPS):
+                    seat_bias_index += 1
+                    waypoints = _make_waypoints(
+                        base_close_pos, z_axis, SEAT_BIAS_STEPS[seat_bias_index]
+                    )
+                    data.mocap_pos[mocap_id_ee] = waypoints[Phase.SEAT]
+                    data.mocap_quat[mocap_id_ee] = target_quat
+                    phase_steps = 0
+                else:
+                    next_phase = Phase.CLOSE
+            elif phase_steps >= PHASE_TIMEOUT_STEPS:
+                next_phase = Phase.CLOSE
+
+        elif phase == Phase.CLOSE:
+            finger_vels = data.qvel[ARM_NU : ARM_NU + HAND_NU]
+            close_contact_ready = seat_contact or grasp_contact_seen
+            if close_contact_ready:
+                if np.max(np.abs(finger_vels)) < SETTLE_VEL_THRESH:
+                    settle_count += 1
+                else:
+                    settle_count = 0
+                if settle_count >= SETTLE_STEPS_REQUIRED:
+                    break  # Grasp achieved
+            else:
+                settle_count = 0
+                if phase_steps >= PHASE_TIMEOUT_STEPS:
+                    break  # Timed out without contact
+            if phase_steps >= PHASE_TIMEOUT_STEPS and grasp_contact_seen:
+                break  # Timeout with prior contact — proceed anyway
+
+        if next_phase != phase:
+            phase = next_phase
+            phase_steps = 0
+            if phase in waypoints:
+                data.mocap_pos[mocap_id_ee] = waypoints[phase]
+                data.mocap_quat[mocap_id_ee] = target_quat
+
+        mujoco.mj_step(model, data)
 
 
 # ---------------------------------------------------------------------------
