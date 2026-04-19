@@ -47,6 +47,9 @@ REWARD_RETENTION_SCALE = 1.0    # weight on palm-relative displacement
 REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
 REWARD_SMOOTH_ALPHA = 0.01      # weight on action delta penalty
 
+# Disturbance force (PDF item 8)
+DEFAULT_FORCE_MAG = 5.0         # max force magnitude in Newtons
+
 
 class GraspEnv(gym.Env):
     """Gymnasium env: LEAP hand grasps an object and must maintain contact."""
@@ -57,6 +60,7 @@ class GraspEnv(gym.Env):
         n_substeps: int = 5,
         timeout_steps: int = 500,
         drop_z: float = 0.05,
+        force_mag: float = DEFAULT_FORCE_MAG,
         keyframes_path: str | Path | None = None,
     ) -> None:
         super().__init__()
@@ -64,6 +68,7 @@ class GraspEnv(gym.Env):
         self.n_substeps = n_substeps
         self.timeout_steps = timeout_steps
         self.drop_z = drop_z
+        self.force_mag = force_mag
 
         self.model, self.data, self._temp_dir = build_scene(object_id)
         self._home_key = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_KEY, "home")
@@ -168,8 +173,19 @@ class GraspEnv(gym.Env):
 
     def step(self, action):
         self.data.ctrl[:] = action
+
+        # Random disturbance force on object (PDF item 8)
+        if self.force_mag > 0:
+            direction = self.np_random.standard_normal(3)
+            direction /= max(np.linalg.norm(direction), 1e-8)
+            magnitude = self.np_random.uniform(0, self.force_mag)
+            self.data.xfrc_applied[self._obj_body][:3] = direction * magnitude
+
         for _ in range(self.n_substeps):
             mujoco.mj_step(self.model, self.data)
+
+        # Clear force after stepping (applied fresh each step)
+        self.data.xfrc_applied[self._obj_body][:] = 0
 
         self._step_count += 1
         dropped = bool(self.data.xpos[self._obj_body, 2] < self.drop_z)
