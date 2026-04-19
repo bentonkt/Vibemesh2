@@ -27,8 +27,9 @@ def main() -> None:
         obs, reward, terminated, truncated, info = env.step(action)
         z = float(env.data.xpos[env._obj_body, 2])
         print(
-            f"step {i:2d}: r={reward:+.1f} term={terminated} "
-            f"trunc={truncated} z={z:.3f} slip={info['slip_mag']:.4f}"
+            f"step {i:2d}: r={reward:+.4f} term={terminated} "
+            f"trunc={truncated} z={z:.3f} slip={info['slip_mag']:.4f} "
+            f"ret={info['retention']:.4f} r_sm={info['r_smooth']:.4f}"
         )
         if terminated or truncated:
             print("episode ended early")
