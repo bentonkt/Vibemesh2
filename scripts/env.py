@@ -59,7 +59,7 @@ class GraspEnv(gym.Env):
         object_id: str = "005_tomato_soup_can",
         n_substeps: int = 5,
         timeout_steps: int = 500,
-        drop_z: float = 0.05,
+        drop_threshold: float = 0.05,
         force_mag: float = DEFAULT_FORCE_MAG,
         keyframes_path: str | Path | None = None,
     ) -> None:
@@ -67,7 +67,7 @@ class GraspEnv(gym.Env):
         self._object_id = object_id
         self.n_substeps = n_substeps
         self.timeout_steps = timeout_steps
-        self.drop_z = drop_z
+        self.drop_threshold = drop_threshold
         self.force_mag = force_mag
 
         self.model, self.data, self._temp_dir = build_scene(object_id)
@@ -188,12 +188,12 @@ class GraspEnv(gym.Env):
         self.data.xfrc_applied[self._obj_body][:] = 0
 
         self._step_count += 1
-        dropped = bool(self.data.xpos[self._obj_body, 2] < self.drop_z)
 
-        # Reward: retention + drop + smoothness (PDF item 7)
+        # Drop detection: palm-relative displacement exceeds threshold
         displacement = float(np.linalg.norm(
             self._palm_relative_obj_pos() - self._initial_palm_rel
         ))
+        dropped = displacement > self.drop_threshold
         r_retention = -REWARD_RETENTION_SCALE * displacement
         r_drop = REWARD_DROP_PENALTY if dropped else 0.0
         r_smooth = -REWARD_SMOOTH_ALPHA * float(np.linalg.norm(action - self._prev_action))
