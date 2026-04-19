@@ -42,6 +42,11 @@ INTERP_STEPS_PER_KF = 200  # 1 second at 200 Hz
 # Physics substeps per interpolation step (matches arrow_key_grasp)
 REPLAY_SUBSTEPS = 5
 
+# Reward coefficients (PDF item 7)
+REWARD_RETENTION_SCALE = 1.0    # weight on palm-relative displacement
+REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
+REWARD_SMOOTH_ALPHA = 0.01      # weight on action delta penalty
+
 
 class GraspEnv(gym.Env):
     """Gymnasium env: LEAP hand grasps an object and must maintain contact."""
@@ -83,6 +88,8 @@ class GraspEnv(gym.Env):
             dtype=np.float32,
         )
         self._step_count = 0
+        self._prev_action = np.zeros(self.model.nu, dtype=np.float64)
+        self._initial_palm_rel: np.ndarray | None = None
 
         # Load keyframes
         kf_path = Path(keyframes_path) if keyframes_path else DEFAULT_KEYFRAMES
@@ -93,6 +100,13 @@ class GraspEnv(gym.Env):
             ]
         else:
             self._keyframe_ctrls = []
+
+    def _palm_relative_obj_pos(self) -> np.ndarray:
+        """Object position in palm_lower's local frame (3D)."""
+        palm_xmat = self.data.xmat[self._palm_body].reshape(3, 3)
+        palm_xpos = self.data.xpos[self._palm_body]
+        obj_xpos = self.data.xpos[self._obj_body]
+        return palm_xmat.T @ (obj_xpos - palm_xpos)
 
     def _compute_slip(self) -> np.ndarray:
         """Object COM velocity in palm_lower's local frame (3D)."""
@@ -146,8 +160,11 @@ class GraspEnv(gym.Env):
         # Replay captured keyframes to achieve grasp
         self._replay_keyframes()
 
+        # Record initial palm-relative object pose for retention reward
+        self._initial_palm_rel = self._palm_relative_obj_pos()
+        self._prev_action = self.data.ctrl.copy()
         self._step_count = 0
-        return self._obs(), {"slip_mag": 0.0}
+        return self._obs(), {"slip_mag": 0.0, "retention": 0.0}
 
     def step(self, action):
         self.data.ctrl[:] = action
@@ -156,10 +173,26 @@ class GraspEnv(gym.Env):
 
         self._step_count += 1
         dropped = bool(self.data.xpos[self._obj_body, 2] < self.drop_z)
-        reward = -10.0 if dropped else 0.0
+
+        # Reward: retention + drop + smoothness (PDF item 7)
+        displacement = float(np.linalg.norm(
+            self._palm_relative_obj_pos() - self._initial_palm_rel
+        ))
+        r_retention = -REWARD_RETENTION_SCALE * displacement
+        r_drop = REWARD_DROP_PENALTY if dropped else 0.0
+        r_smooth = -REWARD_SMOOTH_ALPHA * float(np.linalg.norm(action - self._prev_action))
+        reward = r_retention + r_drop + r_smooth
+
+        self._prev_action = np.array(action, dtype=np.float64)
         truncated = self._step_count >= self.timeout_steps
         slip = self._compute_slip()
-        info = {"slip_mag": float(np.linalg.norm(slip)), "dropped": dropped}
+        info = {
+            "slip_mag": float(np.linalg.norm(slip)),
+            "dropped": dropped,
+            "retention": displacement,
+            "r_retention": r_retention,
+            "r_smooth": r_smooth,
+        }
         return self._obs(), reward, dropped, truncated, info
 
     def close(self):
