@@ -1,0 +1,128 @@
+#!/usr/bin/env python3
+"""Watch GraspEnv episodes in the MuJoCo viewer.
+
+Usage (macOS requires mjpython):
+    mjpython scripts/watch_env.py                        # hold ctrl (no noise)
+    mjpython scripts/watch_env.py --explore               # smooth OU noise around hold
+    mjpython scripts/watch_env.py --explore --sigma 0.5   # stronger exploration
+    mjpython scripts/watch_env.py --random                # pure random (jerky)
+    mjpython scripts/watch_env.py --force 20              # custom disturbance force
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+import mujoco
+import mujoco.viewer
+import numpy as np
+from loop_rate_limiters import RateLimiter
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.env import GraspEnv
+
+
+class OUNoise:
+    """Ornstein-Uhlenbeck process for smooth correlated exploration noise."""
+
+    def __init__(
+        self,
+        size: int,
+        mu: np.ndarray | float = 0.0,
+        theta: float = 0.15,
+        sigma: float = 0.2,
+        rng: np.random.Generator | None = None,
+    ) -> None:
+        self.mu = np.full(size, mu) if isinstance(mu, (int, float)) else mu.copy()
+        self.theta = theta
+        self.sigma = sigma
+        self.size = size
+        self.rng = rng or np.random.default_rng()
+        self.state = self.mu.copy()
+
+    def reset(self) -> None:
+        self.state = self.mu.copy()
+
+    def sample(self) -> np.ndarray:
+        dx = self.theta * (self.mu - self.state) + self.sigma * self.rng.standard_normal(self.size)
+        self.state += dx
+        return self.state.copy()
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Watch GraspEnv in viewer")
+    parser.add_argument("--random", action="store_true", help="Pure random actions (jerky)")
+    parser.add_argument("--explore", action="store_true", help="Smooth OU noise around hold ctrl")
+    parser.add_argument("--force", type=float, default=5.0, help="Disturbance force magnitude (default: 5)")
+    parser.add_argument("--sigma", type=float, default=0.2, help="OU noise sigma (default: 0.2)")
+    parser.add_argument("--theta", type=float, default=0.15, help="OU noise mean reversion rate (default: 0.15)")
+    parser.add_argument("--seed", type=int, default=42)
+    args = parser.parse_args()
+
+    env = GraspEnv(force_mag=args.force)
+    obs, info = env.reset(seed=args.seed)
+    hold_ctrl = env.data.ctrl.copy().astype(np.float32)
+
+    ou_noise = OUNoise(
+        size=env.model.nu,
+        theta=args.theta,
+        sigma=args.sigma,
+        rng=np.random.default_rng(args.seed),
+    )
+
+    if args.random:
+        mode = "random actions (jerky)"
+    elif args.explore:
+        mode = f"OU exploration (sigma={args.sigma}, theta={args.theta})"
+    else:
+        mode = "hold ctrl"
+    print(f"Watching: {mode}, force={args.force}N, seed={args.seed}")
+    print("Close the viewer window to exit.")
+
+    with mujoco.viewer.launch_passive(
+        model=env.model, data=env.data,
+        show_left_ui=False, show_right_ui=False,
+    ) as viewer:
+        mujoco.mjv_defaultFreeCamera(env.model, viewer.cam)
+        rate = RateLimiter(frequency=200.0, warn=False)
+        step = 0
+
+        while viewer.is_running():
+            if args.random:
+                action = env.action_space.sample()
+            elif args.explore:
+                noise = ou_noise.sample().astype(np.float32)
+                action = np.clip(hold_ctrl + noise, env.action_space.low, env.action_space.high)
+            else:
+                action = hold_ctrl
+
+            obs, reward, terminated, truncated, info = env.step(action)
+            step += 1
+
+            if step % 50 == 0 or terminated:
+                z = float(env.data.xpos[env._obj_body, 2])
+                print(
+                    f"step {step:4d}: r={reward:+.4f} slip={info['slip_mag']:.4f} "
+                    f"ret={info['retention']:.4f} z={z:.3f}"
+                )
+
+            if terminated or truncated:
+                print(f"Episode ended (step {step}, {'dropped' if terminated else 'timeout'}). Resetting...")
+                obs, info = env.reset(seed=args.seed + step)
+                hold_ctrl = env.data.ctrl.copy().astype(np.float32)
+                ou_noise.reset()
+                step = 0
+
+            viewer.sync()
+            rate.sleep()
+
+    env.close()
+
+
+if __name__ == "__main__":
+    main()
