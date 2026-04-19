@@ -70,9 +70,12 @@ class GraspEnv(gym.Env):
         )
         joint = int(self.model.body_jntadr[self._obj_body])
         self._obj_qadr = int(self.model.jnt_qposadr[joint])
+        self._palm_body = mujoco.mj_name2id(
+            self.model, mujoco.mjtObj.mjOBJ_BODY, "leap_right/palm_lower"
+        )
 
         self.observation_space = gym.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(3,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(6,), dtype=np.float32
         )
         self.action_space = gym.spaces.Box(
             low=self.model.actuator_ctrlrange[:, 0].astype(np.float32),
@@ -91,8 +94,16 @@ class GraspEnv(gym.Env):
         else:
             self._keyframe_ctrls = []
 
+    def _compute_slip(self) -> np.ndarray:
+        """Object COM velocity in palm_lower's local frame (3D)."""
+        palm_xmat = self.data.xmat[self._palm_body].reshape(3, 3)
+        obj_vel_world = self.data.cvel[self._obj_body][3:]  # [angular, linear] → linear
+        return palm_xmat.T @ obj_vel_world
+
     def _obs(self) -> np.ndarray:
-        return self.data.site_xpos[self._ee_site].astype(np.float32)
+        slip = self._compute_slip()
+        ee_pos = self.data.site_xpos[self._ee_site]
+        return np.concatenate([slip, ee_pos]).astype(np.float32)
 
     def _replay_keyframes(self) -> None:
         """Interpolate through captured keyframes to achieve the grasp."""
@@ -136,7 +147,7 @@ class GraspEnv(gym.Env):
         self._replay_keyframes()
 
         self._step_count = 0
-        return self._obs(), {}
+        return self._obs(), {"slip_mag": 0.0}
 
     def step(self, action):
         self.data.ctrl[:] = action
@@ -147,7 +158,9 @@ class GraspEnv(gym.Env):
         dropped = bool(self.data.xpos[self._obj_body, 2] < self.drop_z)
         reward = -10.0 if dropped else 0.0
         truncated = self._step_count >= self.timeout_steps
-        return self._obs(), reward, dropped, truncated, {}
+        slip = self._compute_slip()
+        info = {"slip_mag": float(np.linalg.norm(slip)), "dropped": dropped}
+        return self._obs(), reward, dropped, truncated, info
 
     def close(self):
         if self._temp_dir and Path(self._temp_dir).exists():
