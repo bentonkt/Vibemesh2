@@ -43,9 +43,13 @@ INTERP_STEPS_PER_KF = 200  # 1 second at 200 Hz
 REPLAY_SUBSTEPS = 5
 
 # Reward coefficients (PDF item 7)
-REWARD_RETENTION_SCALE = 1.0    # weight on palm-relative displacement
+# Scales chosen so retention dominates while held well:
+#   drop_threshold=0.05m, so max retention penalty/step = -0.5 (vs drop -10).
+#   Smoothness kept an order of magnitude below retention so it regularizes
+#   without overpowering the hold signal once displacement shrinks.
+REWARD_RETENTION_SCALE = 10.0   # weight on palm-relative displacement
 REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
-REWARD_SMOOTH_ALPHA = 0.01      # weight on action delta penalty
+REWARD_SMOOTH_ALPHA = 0.001     # weight on action delta penalty
 
 # Disturbance force (PDF item 8)
 DEFAULT_FORCE_MAG = 5.0         # max force magnitude in Newtons
@@ -167,6 +171,8 @@ class GraspEnv(gym.Env):
 
         # Record initial palm-relative object pose for retention reward
         self._initial_palm_rel = self._palm_relative_obj_pos()
+        # Smoothness baselines against the grasp-hold ctrl, not zero — so the
+        # first-step penalty measures how hard the policy jerks away from hold.
         self._prev_action = self.data.ctrl.copy()
         self._step_count = 0
         return self._obs(), {"slip_mag": 0.0, "retention": 0.0}
