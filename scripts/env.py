@@ -88,8 +88,27 @@ class GraspEnv(gym.Env):
             self.model, mujoco.mjtObj.mjOBJ_BODY, "leap_right/palm_lower"
         )
 
+        # Cache joint index arrays for robot state obs (PDF item 6)
+        _arm_joints = [f"joint{i}" for i in range(1, 8)]
+        _hand_joints = [f"leap_right/{i}" for i in range(16)]
+        self._arm_qpos_idx = np.array([
+            self.model.jnt_qposadr[mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, n)]
+            for n in _arm_joints
+        ])
+        self._hand_qpos_idx = np.array([
+            self.model.jnt_qposadr[mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, n)]
+            for n in _hand_joints
+        ])
+        self._hand_qvel_idx = np.array([
+            self.model.jnt_dofadr[mujoco.mj_name2id(
+                self.model, mujoco.mjtObj.mjOBJ_JOINT, n)]
+            for n in _hand_joints
+        ])
+
         self.observation_space = gym.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(6,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(45,), dtype=np.float32
         )
         self.action_space = gym.spaces.Box(
             low=self.model.actuator_ctrlrange[:, 0].astype(np.float32),
@@ -126,7 +145,10 @@ class GraspEnv(gym.Env):
     def _obs(self) -> np.ndarray:
         slip = self._compute_slip()
         ee_pos = self.data.site_xpos[self._ee_site]
-        return np.concatenate([slip, ee_pos]).astype(np.float32)
+        arm_qpos = self.data.qpos[self._arm_qpos_idx]
+        hand_qpos = self.data.qpos[self._hand_qpos_idx]
+        hand_qvel = self.data.qvel[self._hand_qvel_idx]
+        return np.concatenate([slip, ee_pos, arm_qpos, hand_qpos, hand_qvel]).astype(np.float32)
 
     def _replay_keyframes(self) -> None:
         """Interpolate through captured keyframes to achieve the grasp."""
