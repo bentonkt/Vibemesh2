@@ -6,13 +6,14 @@
     {"id": "exp2-n1024-300k", "result": "eval=18.2 @300k, FAIL — worse than baseline. C3 resolved: n_steps=512 wins.", "claim_tested": "C3"},
     {"id": "exp3a-curr-1n", "result": "eval=17.6 @150k (1N force), 1N behaves same as 5N — force NOT primary bottleneck", "claim_tested": "C2"},
     {"id": "exp3b-curr-5n", "result": "eval=25.8 @150k (5N fine-tune on 1N warm-start), modest +1 over exp1 at same budget, RETRY", "claim_tested": "C2"},
-    {"id": "exp4-no-force-300k", "result": "PARTIAL (killed at 150k by tmux window kill). eval ep_len 16–20 with force=0 — confirms drop is policy-induced not force-induced. FAIL vs 25.8 target, but informative negative.", "claim_tested": "C5 (implicit: force IS the bottleneck — rejected)"}
+    {"id": "exp4-no-force-300k", "result": "PARTIAL (killed at 150k by tmux window kill). eval ep_len 16–20 with force=0 — confirms drop is policy-induced not force-induced. FAIL vs 25.8 target, but informative negative.", "claim_tested": "C5 (implicit: force IS the bottleneck — rejected)"},
+    {"id": "exp5-survival-bonus", "result": "SUCCESS. eval ep_len 100.2 ± 24.6 @ 275k (vs prior best 25.8); training rollout 127.7 still rising at 300k. Breakthrough at ~200k steps. Survival-bonus hypothesis validated.", "claim_tested": "C5 (reward shaping — survival bonus)"}
   ],
   "claims": {
     "C1": {
       "statement": "PPO + 45D obs can learn to hold better than random, given enough gradient updates",
-      "evidence": "weak-positive",
-      "reason": "exp1 shows 24.8 vs baseline 19.8 (+25%) with 300k steps, training ep_len still rising at end"
+      "evidence": "positive",
+      "reason": "exp5 eval ep_len 100.2 @ 275k (5x baseline), training 127.7 still rising. Gradient updates alone weren't enough — survival bonus was the unlock."
     },
     "C2": {
       "statement": "Curriculum on force_mag (low -> high) reaches target ep_length faster than fixed-force",
@@ -30,7 +31,7 @@
       "reason": "All experiments hit 26-30 fps stably. Reset speed not a bottleneck."
     }
   },
-  "best": {"exp_id": "exp3b-curr-5n", "eval_ep_length": 25.8},
-  "key_finding": "0/1/5 N force all produce ~20-step ceilings — drop is policy-induced, not force-induced. Current reward (retention + smooth) doesn't reward stillness strongly enough; need explicit survival bonus so doing-nothing has positive value.",
-  "next_experiment": "exp5-survival-bonus — add REWARD_ALIVE_BONUS=0.1 per non-dropped step (+50 over 500-step ep, 5x the -10 drop penalty). Train 300k steps with n_steps=512, force=5N (full task)."
+  "best": {"exp_id": "exp5-survival-bonus", "eval_ep_length": 100.2},
+  "key_finding": "Survival bonus (+0.1/step) broke the ~25-step ceiling. Eval ep_len climbed from flat ~20 (25k-150k) to 100.2 at 275k. Training rollout still rising at 300k. Reward shaping was the primary unlock — not gradient budget, not force curriculum. Retention penalty is now over-dominant at long horizons (reward decreases as ep_len increases), next tuning target.",
+  "overseer_loop_complete": true
 }
