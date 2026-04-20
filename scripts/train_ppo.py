@@ -81,6 +81,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--log-dir", type=str, default="runs/")
     parser.add_argument("--force-mag", type=float, default=5.0,
                         help="Disturbance force magnitude (0=disable)")
+    parser.add_argument("--n-steps", type=int, default=2048,
+                        help="PPO rollout length per env before update")
+    parser.add_argument("--batch-size", type=int, default=256)
+    parser.add_argument("--learning-rate", type=float, default=3e-4)
+    parser.add_argument("--n-eval-episodes", type=int, default=5)
+    parser.add_argument("--eval-freq", type=int, default=25_000,
+                        help="Total env steps between eval runs")
     return parser.parse_args()
 
 
@@ -111,8 +118,8 @@ def main() -> None:
     )
     eval_cb = EvalCallback(
         eval_env,
-        eval_freq=max(25_000 // args.n_envs, 1),
-        n_eval_episodes=5,
+        eval_freq=max(args.eval_freq // args.n_envs, 1),
+        n_eval_episodes=args.n_eval_episodes,
         log_path=str(run_dir),
         best_model_save_path=str(run_dir / "best"),
         deterministic=True,
@@ -123,9 +130,9 @@ def main() -> None:
     model = PPO(
         policy="MlpPolicy",
         env=train_env,
-        n_steps=2048,
-        batch_size=256,
-        learning_rate=3e-4,
+        n_steps=args.n_steps,
+        batch_size=args.batch_size,
+        learning_rate=args.learning_rate,
         tensorboard_log=str(tb_dir),
         device="cpu",
         verbose=0,
