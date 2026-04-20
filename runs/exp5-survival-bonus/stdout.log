@@ -1,0 +1,67 @@
+Run: exp5-survival-bonus
+Log dir: runs/exp5-survival-bonus
+Total steps: 300,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.1
+[   10000] ep_len=  24.3 ep_rew=  -12.48 fps=   30
+[   20000] ep_len=  22.8 ep_rew=  -12.07 fps=   29
+Eval num_timesteps=25000, episode_reward=-11.15 +/- 0.16
+Episode length: 19.20 +/- 0.75
+New best mean reward!
+[   30000] ep_len=  22.2 ep_rew=  -11.90 fps=   29
+[   40000] ep_len=  22.7 ep_rew=  -11.72 fps=   28
+Eval num_timesteps=50000, episode_reward=-10.69 +/- 0.23
+Episode length: 17.60 +/- 0.80
+New best mean reward!
+[   50000] ep_len=  22.1 ep_rew=  -11.60 fps=   28
+[   60000] ep_len=  22.7 ep_rew=  -11.46 fps=   28
+[   70000] ep_len=  24.4 ep_rew=  -11.60 fps=   28
+Eval num_timesteps=75000, episode_reward=-10.73 +/- 0.28
+Episode length: 18.60 +/- 0.49
+[   80000] ep_len=  23.5 ep_rew=  -11.12 fps=   28
+[   90000] ep_len=  24.0 ep_rew=  -10.87 fps=   28
+Eval num_timesteps=100000, episode_reward=-10.33 +/- 0.25
+Episode length: 19.60 +/- 0.49
+New best mean reward!
+[  100000] ep_len=  25.5 ep_rew=  -10.92 fps=   28
+[  110000] ep_len=  27.2 ep_rew=  -10.98 fps=   28
+[  120000] ep_len=  26.3 ep_rew=  -10.56 fps=   29
+Eval num_timesteps=125000, episode_reward=-10.30 +/- 0.09
+Episode length: 20.80 +/- 0.40
+New best mean reward!
+[  130000] ep_len=  29.4 ep_rew=  -10.94 fps=   29
+[  140000] ep_len=  29.4 ep_rew=  -10.73 fps=   29
+Eval num_timesteps=150000, episode_reward=-10.12 +/- 0.13
+Episode length: 22.40 +/- 0.49
+New best mean reward!
+[  150000] ep_len=  32.4 ep_rew=  -10.91 fps=   30
+[  160000] ep_len=  34.3 ep_rew=  -10.82 fps=   30
+[  170000] ep_len=  40.5 ep_rew=  -11.23 fps=   30
+Eval num_timesteps=175000, episode_reward=-9.87 +/- 0.12
+Episode length: 23.00 +/- 0.00
+New best mean reward!
+[  180000] ep_len=  47.3 ep_rew=  -11.59 fps=   31
+[  190000] ep_len=  54.6 ep_rew=  -11.97 fps=   32
+Eval num_timesteps=200000, episode_reward=-10.05 +/- 0.24
+Episode length: 32.60 +/- 1.20
+[  200000] ep_len=  66.5 ep_rew=  -12.34 fps=   33
+[  210000] ep_len=  74.4 ep_rew=  -13.30 fps=   34
+[  220000] ep_len=  87.1 ep_rew=  -14.75 fps=   35
+Eval num_timesteps=225000, episode_reward=-9.77 +/- 0.38
+Episode length: 46.00 +/- 4.24
+New best mean reward!
+[  230000] ep_len=  87.5 ep_rew=  -14.40 fps=   36
+[  240000] ep_len= 102.6 ep_rew=  -15.83 fps=   37
+Eval num_timesteps=250000, episode_reward=-11.97 +/- 0.63
+Episode length: 57.60 +/- 2.58
+[  250000] ep_len= 106.1 ep_rew=  -16.25 fps=   38
+[  260000] ep_len= 113.7 ep_rew=  -16.28 fps=   39
+[  270000] ep_len= 118.2 ep_rew=  -17.00 fps=   40
+Eval num_timesteps=275000, episode_reward=-15.14 +/- 2.59
+Episode length: 100.20 +/- 24.63
+[  280000] ep_len= 119.4 ep_rew=  -16.98 fps=   40
+[  290000] ep_len= 117.9 ep_rew=  -16.48 fps=   41
+Eval num_timesteps=300000, episode_reward=-13.95 +/- 1.42
+Episode length: 54.40 +/- 9.93
+[  300000] ep_len= 127.7 ep_rew=  -17.45 fps=   42
+
+Final model saved to runs/exp5-survival-bonus/final.zip
+Total wall time: 7010.8s
