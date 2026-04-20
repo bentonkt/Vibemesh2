@@ -1,0 +1,3 @@
+Run: exp6-ee-delta
+Log dir: runs/exp6-ee-delta
+Total steps: 300,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.0
