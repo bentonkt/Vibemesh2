@@ -40,8 +40,10 @@ def _make_env(seed: int, force_mag: float, survival_bonus: float = 0.0):
 
 
 def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0, survival_bonus: float = 0.0) -> SubprocVecEnv:
+    import platform
+    start_method = "fork" if platform.system() != "Windows" else "spawn"
     fns = [_make_env(seed + i, force_mag, survival_bonus) for i in range(n_envs)]
-    return SubprocVecEnv(fns, start_method="fork")
+    return SubprocVecEnv(fns, start_method=start_method)
 
 
 class ProgressCallback(BaseCallback):
