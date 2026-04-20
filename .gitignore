@@ -4,6 +4,12 @@ data/ycb/
 data/hope/
 HOPE/
 
+# Training runs — track SUMMARY.md only; ignore large binaries and TB logs
+runs/**/ckpts/
+runs/**/tb/
+runs/**/*.zip
+runs/**/evaluations.npz
+
 # Python
 __pycache__/
 *.pyc
