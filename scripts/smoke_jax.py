@@ -16,9 +16,17 @@ Expected output (RTX 3090, n_envs=64):
 from __future__ import annotations
 
 import argparse
+import sys
 import time
+from pathlib import Path
 
 import numpy as np
+
+# Ensure project root is on path so `scripts.*` imports work when
+# running from any directory (e.g., cd Vibemesh2 && python scripts/smoke_jax.py)
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 
 def run_smoke_test(n_envs: int = 4, n_steps: int = 100, object_id: str = "005_tomato_soup_can"):

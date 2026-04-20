@@ -217,7 +217,15 @@ def build_mjx_model(
     shutil.rmtree(temp_dir, ignore_errors=True)
 
     # Drop multiccd — not supported in MJX (see feasibility study §1)
-    model.opt.enableflags &= ~mujoco.mjtEnableBit.mjENBL_MULTICCD
+    model.opt.enableflags &= ~int(mujoco.mjtEnableBit.mjENBL_MULTICCD)
+
+    # MJX does not support margin/gap for plane-mesh or mesh-mesh pairs.
+    # Zero them out — contact detection stays functional with slightly
+    # different penetration semantics (acceptable for a smoke test).
+    model.geom_margin[:] = 0.0
+    model.geom_gap[:] = 0.0
+    model.pair_margin[:] = 0.0
+    model.pair_gap[:] = 0.0
 
     mx = _mjx.put_model(model)
     return model, mx
