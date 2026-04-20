@@ -65,6 +65,8 @@ def main() -> None:
     parser.add_argument("--deterministic", action="store_true",
                         help="Deterministic policy rollout (ignored without --model)")
     parser.add_argument("--force", type=float, default=5.0, help="Disturbance force magnitude (default: 5)")
+    parser.add_argument("--show-forces", action="store_true",
+                        help="Render applied-force arrow on the object (xfrc_applied)")
     parser.add_argument("--sigma", type=float, default=0.2, help="OU noise sigma (default: 0.2)")
     parser.add_argument("--theta", type=float, default=0.15, help="OU noise mean reversion rate (default: 0.15)")
     parser.add_argument("--seed", type=int, default=42)
@@ -102,6 +104,8 @@ def main() -> None:
         show_left_ui=False, show_right_ui=False,
     ) as viewer:
         mujoco.mjv_defaultFreeCamera(env.model, viewer.cam)
+        if args.show_forces:
+            viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_PERTFORCE] = 1
         rate = RateLimiter(frequency=200.0, warn=False)
         step = 0
 
@@ -132,6 +136,12 @@ def main() -> None:
                 hold_ctrl = env.data.ctrl.copy().astype(np.float32)
                 ou_noise.reset()
                 step = 0
+
+            if args.show_forces and hasattr(env, "last_applied_force"):
+                # env.step() clears xfrc_applied; re-write it so the PERTFORCE
+                # arrow is visible during render. Does not affect physics
+                # (next step() overwrites before mj_step).
+                env.data.xfrc_applied[env._obj_body][:3] = env.last_applied_force
 
             viewer.sync()
             rate.sleep()

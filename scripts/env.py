@@ -209,11 +209,13 @@ class GraspEnv(gym.Env):
         self.data.ctrl[:] = action
 
         # Random disturbance force on object (PDF item 8)
+        self.last_applied_force = np.zeros(3, dtype=np.float64)
         if self.force_mag > 0:
             direction = self.np_random.standard_normal(3)
             direction /= max(np.linalg.norm(direction), 1e-8)
             magnitude = self.np_random.uniform(0, self.force_mag)
-            self.data.xfrc_applied[self._obj_body][:3] = direction * magnitude
+            self.last_applied_force = direction * magnitude
+            self.data.xfrc_applied[self._obj_body][:3] = self.last_applied_force
 
         for _ in range(self.n_substeps):
             mujoco.mj_step(self.model, self.data)
