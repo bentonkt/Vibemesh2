@@ -88,6 +88,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-eval-episodes", type=int, default=5)
     parser.add_argument("--eval-freq", type=int, default=25_000,
                         help="Total env steps between eval runs")
+    parser.add_argument("--load-model", type=str, default=None,
+                        help="Path to a .zip model to warm-start from (env is replaced)")
     return parser.parse_args()
 
 
@@ -127,16 +129,29 @@ def main() -> None:
     )
     progress_cb = ProgressCallback(log_interval=10_000)
 
-    model = PPO(
-        policy="MlpPolicy",
-        env=train_env,
-        n_steps=args.n_steps,
-        batch_size=args.batch_size,
-        learning_rate=args.learning_rate,
-        tensorboard_log=str(tb_dir),
-        device="cpu",
-        verbose=0,
-    )
+    if args.load_model:
+        print(f"Loading model from {args.load_model}")
+        model = PPO.load(
+            args.load_model,
+            env=train_env,
+            tensorboard_log=str(tb_dir),
+            device="cpu",
+        )
+        # Override hyperparams that may differ from the loaded model
+        model.n_steps = args.n_steps
+        model.batch_size = args.batch_size
+        model.learning_rate = args.learning_rate
+    else:
+        model = PPO(
+            policy="MlpPolicy",
+            env=train_env,
+            n_steps=args.n_steps,
+            batch_size=args.batch_size,
+            learning_rate=args.learning_rate,
+            tensorboard_log=str(tb_dir),
+            device="cpu",
+            verbose=0,
+        )
 
     start = time.time()
     model.learn(
