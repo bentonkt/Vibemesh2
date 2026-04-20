@@ -29,18 +29,18 @@ from stable_baselines3.common.callbacks import (
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 
 
-def _make_env(seed: int, force_mag: float):
+def _make_env(seed: int, force_mag: float, survival_bonus: float = 0.0):
     """Factory for a single GraspEnv instance (must be importable for subprocess)."""
     def _init():
         from scripts.env import GraspEnv
-        env = GraspEnv(force_mag=force_mag)
+        env = GraspEnv(force_mag=force_mag, survival_bonus=survival_bonus)
         env.reset(seed=seed)
         return env
     return _init
 
 
-def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0) -> SubprocVecEnv:
-    fns = [_make_env(seed + i, force_mag) for i in range(n_envs)]
+def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0, survival_bonus: float = 0.0) -> SubprocVecEnv:
+    fns = [_make_env(seed + i, force_mag, survival_bonus) for i in range(n_envs)]
     return SubprocVecEnv(fns, start_method="fork")
 
 
@@ -90,6 +90,8 @@ def parse_args() -> argparse.Namespace:
                         help="Total env steps between eval runs")
     parser.add_argument("--load-model", type=str, default=None,
                         help="Path to a .zip model to warm-start from (env is replaced)")
+    parser.add_argument("--survival-bonus", type=float, default=0.0,
+                        help="Per-step reward bonus for staying alive (0=disabled)")
     return parser.parse_args()
 
 
@@ -103,13 +105,13 @@ def main() -> None:
 
     print(f"Run: {args.run_name}")
     print(f"Log dir: {run_dir}")
-    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}")
+    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}  survival_bonus: {args.survival_bonus}")
 
     # Training envs
-    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag))
+    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag, survival_bonus=args.survival_bonus))
 
     # Single eval env
-    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag))
+    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag, survival_bonus=args.survival_bonus))
 
     # Callbacks
     checkpoint_cb = CheckpointCallback(

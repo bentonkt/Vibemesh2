@@ -53,6 +53,7 @@ REPLAY_SUBSTEPS = 5
 REWARD_RETENTION_SCALE = 10.0   # weight on palm-relative displacement
 REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
 REWARD_SMOOTH_ALPHA = 0.001     # weight on action delta penalty
+REWARD_ALIVE_BONUS = 0.0        # per-step survival bonus (0=disabled; override via constructor)
 
 # Disturbance force (PDF item 8)
 DEFAULT_FORCE_MAG = 5.0         # max force magnitude in Newtons
@@ -68,6 +69,7 @@ class GraspEnv(gym.Env):
         timeout_steps: int = 500,
         drop_threshold: float = 0.05,
         force_mag: float = DEFAULT_FORCE_MAG,
+        survival_bonus: float = REWARD_ALIVE_BONUS,
         keyframes_path: str | Path | None = None,
     ) -> None:
         super().__init__()
@@ -76,6 +78,7 @@ class GraspEnv(gym.Env):
         self.timeout_steps = timeout_steps
         self.drop_threshold = drop_threshold
         self.force_mag = force_mag
+        self.survival_bonus = survival_bonus
 
         self.model, self.data, self._temp_dir = build_scene(object_id)
         self._home_key = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_KEY, "home")
@@ -228,7 +231,8 @@ class GraspEnv(gym.Env):
         r_retention = -REWARD_RETENTION_SCALE * displacement
         r_drop = REWARD_DROP_PENALTY if dropped else 0.0
         r_smooth = -REWARD_SMOOTH_ALPHA * float(np.linalg.norm(action - self._prev_action))
-        reward = r_retention + r_drop + r_smooth
+        r_alive = self.survival_bonus if not dropped else 0.0
+        reward = r_retention + r_drop + r_smooth + r_alive
 
         self._prev_action = np.array(action, dtype=np.float64)
         truncated = self._step_count >= self.timeout_steps
