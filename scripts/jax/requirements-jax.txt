@@ -7,7 +7,7 @@
 # Note: jax[cuda12] requires CUDA 12.x. The 3090 should already have it.
 
 jax[cuda12]>=0.4.25
-mujoco-mjx>=3.1.0     # must match installed mujoco version (3.6.0 → use >=3.1.0)
+mujoco-mjx>=3.7.0     # must match installed mujoco version (3090 has 3.7.0)
 sbx-rl>=0.10.0        # Stable-Baselines3 JAX — for future training (Phase 5)
 flax>=0.8.0           # sbx dependency
 optax>=0.2.0          # sbx dependency
