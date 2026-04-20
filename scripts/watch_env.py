@@ -7,6 +7,8 @@ Usage (macOS requires mjpython):
     mjpython scripts/watch_env.py --explore --sigma 0.5   # stronger exploration
     mjpython scripts/watch_env.py --random                # pure random (jerky)
     mjpython scripts/watch_env.py --force 20              # custom disturbance force
+    mjpython scripts/watch_env.py --model runs/exp5-survival-bonus/final.zip
+                                                          # trained PPO policy
 """
 
 from __future__ import annotations
@@ -58,6 +60,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Watch GraspEnv in viewer")
     parser.add_argument("--random", action="store_true", help="Pure random actions (jerky)")
     parser.add_argument("--explore", action="store_true", help="Smooth OU noise around hold ctrl")
+    parser.add_argument("--model", type=str, default=None,
+                        help="Path to a trained SB3 PPO .zip — use policy for actions")
+    parser.add_argument("--deterministic", action="store_true",
+                        help="Deterministic policy rollout (ignored without --model)")
     parser.add_argument("--force", type=float, default=5.0, help="Disturbance force magnitude (default: 5)")
     parser.add_argument("--sigma", type=float, default=0.2, help="OU noise sigma (default: 0.2)")
     parser.add_argument("--theta", type=float, default=0.15, help="OU noise mean reversion rate (default: 0.15)")
@@ -68,6 +74,11 @@ def main() -> None:
     obs, info = env.reset(seed=args.seed)
     hold_ctrl = env.data.ctrl.copy().astype(np.float32)
 
+    model = None
+    if args.model:
+        from stable_baselines3 import PPO
+        model = PPO.load(args.model, device="cpu")
+
     ou_noise = OUNoise(
         size=env.model.nu,
         theta=args.theta,
@@ -75,7 +86,9 @@ def main() -> None:
         rng=np.random.default_rng(args.seed),
     )
 
-    if args.random:
+    if model is not None:
+        mode = f"policy ({args.model}, {'deterministic' if args.deterministic else 'stochastic'})"
+    elif args.random:
         mode = "random actions (jerky)"
     elif args.explore:
         mode = f"OU exploration (sigma={args.sigma}, theta={args.theta})"
@@ -93,7 +106,9 @@ def main() -> None:
         step = 0
 
         while viewer.is_running():
-            if args.random:
+            if model is not None:
+                action, _ = model.predict(obs, deterministic=args.deterministic)
+            elif args.random:
                 action = env.action_space.sample()
             elif args.explore:
                 noise = ou_noise.sample().astype(np.float32)
