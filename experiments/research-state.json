@@ -5,7 +5,8 @@
     {"id": "exp1-n512-300k", "result": "eval=24.8 @300k, training ep_len=30.8 still rising, RETRY", "claim_tested": "C1+C3"},
     {"id": "exp2-n1024-300k", "result": "eval=18.2 @300k, FAIL — worse than baseline. C3 resolved: n_steps=512 wins.", "claim_tested": "C3"},
     {"id": "exp3a-curr-1n", "result": "eval=17.6 @150k (1N force), 1N behaves same as 5N — force NOT primary bottleneck", "claim_tested": "C2"},
-    {"id": "exp3b-curr-5n", "result": "eval=25.8 @150k (5N fine-tune on 1N warm-start), modest +1 over exp1 at same budget, RETRY", "claim_tested": "C2"}
+    {"id": "exp3b-curr-5n", "result": "eval=25.8 @150k (5N fine-tune on 1N warm-start), modest +1 over exp1 at same budget, RETRY", "claim_tested": "C2"},
+    {"id": "exp4-no-force-300k", "result": "PARTIAL (killed at 150k by tmux window kill). eval ep_len 16–20 with force=0 — confirms drop is policy-induced not force-induced. FAIL vs 25.8 target, but informative negative.", "claim_tested": "C5 (implicit: force IS the bottleneck — rejected)"}
   ],
   "claims": {
     "C1": {
@@ -30,5 +31,6 @@
     }
   },
   "best": {"exp_id": "exp3b-curr-5n", "eval_ep_length": 25.8},
-  "key_finding": "1N force behaves same as 5N — drop mechanism is from policy joint actions, not external force. Reward signal may need survival bonus to break through ~25-step eval ceiling."
+  "key_finding": "0/1/5 N force all produce ~20-step ceilings — drop is policy-induced, not force-induced. Current reward (retention + smooth) doesn't reward stillness strongly enough; need explicit survival bonus so doing-nothing has positive value.",
+  "next_experiment": "exp5-survival-bonus — add REWARD_ALIVE_BONUS=0.1 per non-dropped step (+50 over 500-step ep, 5x the -10 drop penalty). Train 300k steps with n_steps=512, force=5N (full task)."
 }
