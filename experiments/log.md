@@ -46,3 +46,45 @@ python3 scripts/train_ppo.py \
 **Success criterion:** eval ep_length ≥ 50 → C3 moderate evidence for 1024.
 **Retry criterion:** eval ep_length in 25–49 → inconclusive vs exp1.
 **Fail criterion:** eval ep_length < 25 → 512 better, C3 favors smaller n_steps.
+**Result:** FAIL — eval ep_len = 18.2 ± 0.40 @ 300k. Worse than baseline AND exp1. Peaked 28.6 @ 25k then collapsed. C3 resolved: n_steps=512 wins. See runs/exp2-n1024-300k/ANALYSIS.md.
+
+## exp3a-curr-1n (Curriculum Phase A)
+
+**Start:** 2026-04-20
+**Hypothesis:** C2 — training at low force first (1N) lets policy learn stable hold behavior; warm-start for 5N phase.
+**Design changes vs exp1:** force_mag 5.0 → 1.0; total_steps 300k → 150k (phase A only). n_steps=512 (best from C3).
+**Command:**
+```
+python3 scripts/train_ppo.py \
+  --total-steps 150000 \
+  --n-envs 4 \
+  --run-name exp3a-curr-1n \
+  --force-mag 1.0 \
+  --n-steps 512 \
+  --batch-size 256 \
+  --learning-rate 3e-4
+```
+**Budget:** ~1.8 hr wall time. Expected PPO updates: ~73.
+**Note:** Eval in this phase is at 1N. Phase B (exp3b) loads this model and trains/evals at 5N.
+
+## exp3b-curr-5n (Curriculum Phase B)
+
+**Start:** 2026-04-20 (after exp3a completes)
+**Hypothesis:** C2 continued — warm-started policy from 1N transfers to 5N better than cold-start.
+**Design changes vs exp1:** warm-start from exp3a; same 150k steps remaining.
+**Command:**
+```
+python3 scripts/train_ppo.py \
+  --total-steps 150000 \
+  --n-envs 4 \
+  --run-name exp3b-curr-5n \
+  --force-mag 5.0 \
+  --n-steps 512 \
+  --batch-size 256 \
+  --learning-rate 3e-4 \
+  --load-model runs/exp3a-curr-1n/final.zip
+```
+**Budget:** ~1.8 hr wall time.
+**Success criterion:** eval ep_length ≥ 50 → C2 positive evidence.
+**Retry criterion:** eval ep_length 25–49 → modest curriculum benefit; consider longer phase B.
+**Fail criterion:** eval ep_length < 25 → curriculum doesn't transfer; fixed-5N is equivalent or better.

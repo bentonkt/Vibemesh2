@@ -2,7 +2,8 @@
   "goal": "eval ep_length >= 400 on tomato soup can @ 5N (deterministic, 5 eps)",
   "experiments": [
     {"id": "sanity-01", "result": "eval=19.8 @50k steps, underfit (6 PPO updates)", "claim_tested": "C1"},
-    {"id": "exp1-n512-300k", "result": "eval=24.8 @300k, training ep_len=30.8 still rising, RETRY", "claim_tested": "C1+C3"}
+    {"id": "exp1-n512-300k", "result": "eval=24.8 @300k, training ep_len=30.8 still rising, RETRY", "claim_tested": "C1+C3"},
+    {"id": "exp2-n1024-300k", "result": "eval=18.2 @300k, FAIL — worse than baseline. C3 resolved: n_steps=512 wins.", "claim_tested": "C3"}
   ],
   "claims": {
     "C1": {
@@ -12,17 +13,18 @@
     },
     "C2": {
       "statement": "Curriculum on force_mag (low -> high) reaches target ep_length faster than fixed-force",
-      "evidence": "none"
+      "evidence": "none",
+      "reason": "Testing in exp3: phase A 150k at 1N then phase B 150k at 5N with warm-start"
     },
     "C3": {
       "statement": "n_steps=512 or 1024 beats n_steps=2048 within 300k step budget",
-      "evidence": "weak-positive",
-      "reason": "exp1 (n_steps=512) improved over sanity-01 (n_steps=2048): 24.8 vs 19.8 at 300k. Testing n_steps=1024 in exp2."
+      "evidence": "positive",
+      "reason": "exp1 (n_steps=512) = 24.8 beats exp2 (n_steps=1024) = 18.2 and sanity-01 (n_steps=2048) = 19.8. Use n_steps=512 going forward."
     },
     "C4": {
       "statement": "Lower INTERP_STEPS_PER_KF increases fps without hurting grasp stability",
       "evidence": "moderate-positive",
-      "reason": "commit ab47cb7 reduced 200->80 + settle 100->20 before sanity-01 run; exp1 hit 27 fps stably"
+      "reason": "commit ab47cb7 reduced 200->80 + settle 100->20 before sanity-01 run; exp1 and exp2 both hit 26-27 fps stably"
     }
   },
   "best": {"exp_id": "exp1-n512-300k", "eval_ep_length": 24.8}

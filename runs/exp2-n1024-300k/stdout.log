@@ -1,0 +1,68 @@
+Run: exp2-n1024-300k
+Log dir: runs/exp2-n1024-300k
+Total steps: 300,000  n_envs: 4  force_mag: 5.0
+[   10000] ep_len=  24.1 ep_rew=  -14.88 fps=   30
+[   20000] ep_len=  24.0 ep_rew=  -14.69 fps=   30
+Eval num_timesteps=25000, episode_reward=-15.50 +/- 2.08
+Episode length: 28.60 +/- 5.46
+New best mean reward!
+[   30000] ep_len=  23.1 ep_rew=  -14.39 fps=   30
+[   40000] ep_len=  21.6 ep_rew=  -14.00 fps=   29
+Eval num_timesteps=50000, episode_reward=-12.86 +/- 0.16
+Episode length: 21.20 +/- 0.75
+New best mean reward!
+[   50000] ep_len=  20.6 ep_rew=  -13.64 fps=   29
+[   60000] ep_len=  21.7 ep_rew=  -13.79 fps=   28
+[   70000] ep_len=  21.5 ep_rew=  -13.68 fps=   28
+Eval num_timesteps=75000, episode_reward=-12.37 +/- 0.34
+Episode length: 18.20 +/- 0.40
+New best mean reward!
+[   80000] ep_len=  20.8 ep_rew=  -13.39 fps=   28
+[   90000] ep_len=  20.6 ep_rew=  -13.38 fps=   28
+Eval num_timesteps=100000, episode_reward=-12.45 +/- 0.16
+Episode length: 16.80 +/- 0.40
+[  100000] ep_len=  20.3 ep_rew=  -13.22 fps=   28
+[  110000] ep_len=  20.1 ep_rew=  -13.05 fps=   27
+[  120000] ep_len=  20.0 ep_rew=  -12.93 fps=   27
+Eval num_timesteps=125000, episode_reward=-12.24 +/- 0.09
+Episode length: 16.00 +/- 0.00
+New best mean reward!
+[  130000] ep_len=  19.7 ep_rew=  -12.82 fps=   27
+[  140000] ep_len=  19.7 ep_rew=  -12.73 fps=   27
+Eval num_timesteps=150000, episode_reward=-11.99 +/- 0.32
+Episode length: 16.40 +/- 0.49
+New best mean reward!
+[  150000] ep_len=  20.0 ep_rew=  -12.68 fps=   27
+[  160000] ep_len=  19.7 ep_rew=  -12.55 fps=   27
+[  170000] ep_len=  19.8 ep_rew=  -12.46 fps=   26
+Eval num_timesteps=175000, episode_reward=-11.72 +/- 0.13
+Episode length: 17.20 +/- 0.40
+New best mean reward!
+[  180000] ep_len=  20.0 ep_rew=  -12.47 fps=   26
+[  190000] ep_len=  20.0 ep_rew=  -12.34 fps=   26
+Eval num_timesteps=200000, episode_reward=-12.10 +/- 0.14
+Episode length: 18.00 +/- 0.00
+[  200000] ep_len=  20.0 ep_rew=  -12.38 fps=   26
+[  210000] ep_len=  20.3 ep_rew=  -12.30 fps=   26
+[  220000] ep_len=  20.6 ep_rew=  -12.30 fps=   26
+Eval num_timesteps=225000, episode_reward=-11.74 +/- 0.08
+Episode length: 18.00 +/- 0.00
+[  230000] ep_len=  20.5 ep_rew=  -12.24 fps=   26
+[  240000] ep_len=  20.6 ep_rew=  -12.24 fps=   26
+Eval num_timesteps=250000, episode_reward=-11.95 +/- 0.23
+Episode length: 18.80 +/- 0.40
+[  250000] ep_len=  20.6 ep_rew=  -12.23 fps=   26
+[  260000] ep_len=  20.5 ep_rew=  -12.10 fps=   26
+[  270000] ep_len=  21.1 ep_rew=  -12.18 fps=   26
+Eval num_timesteps=275000, episode_reward=-11.67 +/- 0.15
+Episode length: 18.80 +/- 0.40
+New best mean reward!
+[  280000] ep_len=  21.6 ep_rew=  -12.27 fps=   26
+[  290000] ep_len=  21.2 ep_rew=  -12.08 fps=   26
+Eval num_timesteps=300000, episode_reward=-11.65 +/- 0.12
+Episode length: 18.20 +/- 0.40
+New best mean reward!
+[  300000] ep_len=  21.2 ep_rew=  -12.04 fps=   26
+
+Final model saved to runs/exp2-n1024-300k/final.zip
+Total wall time: 11337.4s
