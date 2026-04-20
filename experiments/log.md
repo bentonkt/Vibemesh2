@@ -88,3 +88,25 @@ python3 scripts/train_ppo.py \
 **Success criterion:** eval ep_length ≥ 50 → C2 positive evidence.
 **Retry criterion:** eval ep_length 25–49 → modest curriculum benefit; consider longer phase B.
 **Fail criterion:** eval ep_length < 25 → curriculum doesn't transfer; fixed-5N is equivalent or better.
+**Result (combined exp3a+exp3b):** RETRY — phase B final eval 25.80 ± 0.40. Modest benefit over exp1 (+1 step). Training ep_len=34.1 rising. Key finding: 1N force behaves same as 5N — force is NOT the primary bottleneck. See ANALYSIS.md files.
+
+## exp4-no-force-300k
+
+**Start:** 2026-04-20
+**Hypothesis:** Diagnostic — if force_mag=0 yields similar ep_len (~25), the drop mechanism is purely the policy's joint movements. If it's much higher, force IS still a meaningful factor.
+**Design changes vs exp1:** force_mag 5.0 → 0.0. Everything else identical.
+**Command:**
+```
+python3 scripts/train_ppo.py \
+  --total-steps 300000 \
+  --n-envs 4 \
+  --run-name exp4-no-force-300k \
+  --force-mag 0.0 \
+  --n-steps 512 \
+  --batch-size 256 \
+  --learning-rate 3e-4
+```
+**Budget:** ~3.6 hr wall time.
+**Success criterion:** eval ep_length ≥ 80 → force is major factor; curriculum C2 is the right direction.
+**Retry criterion:** eval ep_length 25–79 → force contributes but isn't everything.
+**Fail criterion:** eval ep_length < 30 → force is irrelevant; reward redesign (survival bonus) is needed.
