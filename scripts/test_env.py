@@ -18,6 +18,7 @@ from scripts.env import GraspEnv
 def main() -> None:
     env = GraspEnv()
     obs, info = env.reset()
+    assert env.action_space.shape == (22,), f"bad action_space shape: {env.action_space.shape}"
     assert obs.shape == (45,), f"bad obs shape: {obs.shape}"
     assert np.all(np.isfinite(obs)), f"non-finite obs: {obs}"
     print(f"reset OK: obs={obs} slip_mag={info['slip_mag']:.4f}")
