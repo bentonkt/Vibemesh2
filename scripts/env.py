@@ -8,6 +8,10 @@ Minimal implementation of item 3 from Uksang's Phase 4 TODO (2026-04-16):
 - Episode terminates if the object drops below drop_z or step_count hits
   timeout_steps.
 
+Action space (22D per PDF item 6):
+  [ee_pos_delta(3), ee_rot_delta(3), hand_ctrl(16)]
+  EE deltas are resolved via mink differential IK each step.
+
 Keyframes are captured interactively via scripts/capture_keyframes.py
 and saved to config/grasp_keyframes.json.
 
@@ -26,6 +30,7 @@ import sys
 from pathlib import Path
 
 import gymnasium as gym
+import mink
 import mujoco
 import numpy as np
 
@@ -38,29 +43,33 @@ from scripts.test_scene import build_scene  # noqa: E402
 DEFAULT_KEYFRAMES = PROJECT_ROOT / "config" / "grasp_keyframes.json"
 
 # Steps to interpolate between each pair of keyframes during replay.
-# 30 steps × 5 substeps = 0.15 s simulated per keyframe — fast enough for RL
-# resets while still giving physics time to close contacts. The viewer/demo
-# path can override this by passing a subclass or using test_scene.py directly.
 INTERP_STEPS_PER_KF = 80
-# Physics substeps per interpolation step (matches arrow_key_grasp)
 REPLAY_SUBSTEPS = 5
 
+# xArm7 has 7 arm actuators (joint1–joint7), LEAP hand has 16.
+ARM_NU = 7
+HAND_NU = 16
+
 # Reward coefficients (PDF item 7)
-# Scales chosen so retention dominates while held well:
-#   drop_threshold=0.05m, so max retention penalty/step = -0.5 (vs drop -10).
-#   Smoothness kept an order of magnitude below retention so it regularizes
-#   without overpowering the hold signal once displacement shrinks.
 REWARD_RETENTION_SCALE = 10.0   # weight on palm-relative displacement
 REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
 REWARD_SMOOTH_ALPHA = 0.001     # weight on action delta penalty
-REWARD_ALIVE_BONUS = 0.0        # per-step survival bonus (0=disabled; override via constructor)
+REWARD_ALIVE_BONUS = 0.0        # per-step survival bonus (0=disabled)
 
 # Disturbance force (PDF item 8)
-DEFAULT_FORCE_MAG = 5.0         # max force magnitude in Newtons
+DEFAULT_FORCE_MAG = 5.0
+
+# EE-delta action bounds (PDF item 6)
+EE_POS_DELTA_BOUND = 0.01   # ±0.01 m per step
+EE_ROT_DELTA_BOUND = 0.05   # ±0.05 rad per step
 
 
 class GraspEnv(gym.Env):
-    """Gymnasium env: LEAP hand grasps an object and must maintain contact."""
+    """Gymnasium env: LEAP hand grasps an object and must maintain contact.
+
+    Action space: 22D = [ee_pos_delta(3), ee_rot_delta(3), hand_ctrl(16)]
+    Observation space: 45D = [slip(3), ee_pos(3), arm_qpos(7), hand_qpos(16), hand_qvel(16)]
+    """
 
     def __init__(
         self,
@@ -113,16 +122,42 @@ class GraspEnv(gym.Env):
             for n in _hand_joints
         ])
 
+        # Mink IK setup for EE-delta action space (PDF item 6)
+        self._mink_config = mink.Configuration(self.model)
+        self._ee_task = mink.FrameTask(
+            frame_name="attachment_site",
+            frame_type="site",
+            position_cost=1.0,
+            orientation_cost=1.0,
+            lm_damping=1.0,
+        )
+        self._posture_task = mink.PostureTask(model=self.model, cost=5e-2)
+        self._mink_limits = [mink.ConfigurationLimit(model=self.model)]
+        self._ik_dt = float(self.n_substeps * self.model.opt.timestep)
+
         self.observation_space = gym.spaces.Box(
             low=-np.inf, high=np.inf, shape=(45,), dtype=np.float32
         )
+
+        # 22D action space: [ee_pos_delta(3), ee_rot_delta(3), hand_ctrl(16)]
+        hand_low = self.model.actuator_ctrlrange[ARM_NU:ARM_NU + HAND_NU, 0].astype(np.float32)
+        hand_high = self.model.actuator_ctrlrange[ARM_NU:ARM_NU + HAND_NU, 1].astype(np.float32)
         self.action_space = gym.spaces.Box(
-            low=self.model.actuator_ctrlrange[:, 0].astype(np.float32),
-            high=self.model.actuator_ctrlrange[:, 1].astype(np.float32),
+            low=np.concatenate([
+                np.full(3, -EE_POS_DELTA_BOUND, dtype=np.float32),
+                np.full(3, -EE_ROT_DELTA_BOUND, dtype=np.float32),
+                hand_low,
+            ]),
+            high=np.concatenate([
+                np.full(3, EE_POS_DELTA_BOUND, dtype=np.float32),
+                np.full(3, EE_ROT_DELTA_BOUND, dtype=np.float32),
+                hand_high,
+            ]),
             dtype=np.float32,
         )
+
         self._step_count = 0
-        self._prev_action = np.zeros(self.model.nu, dtype=np.float64)
+        self._prev_action = np.zeros(22, dtype=np.float64)
         self._initial_palm_rel: np.ndarray | None = None
 
         # Load keyframes
@@ -161,7 +196,6 @@ class GraspEnv(gym.Env):
         if not self._keyframe_ctrls:
             return
 
-        # Start from current ctrl
         current_ctrl = self.data.ctrl.copy()
 
         for target_ctrl in self._keyframe_ctrls:
@@ -197,16 +231,52 @@ class GraspEnv(gym.Env):
         # Replay captured keyframes to achieve grasp
         self._replay_keyframes()
 
+        # Sync mink configuration to post-grasp state; lock posture for regularization
+        self._mink_config.update(self.data.qpos)
+        self._posture_task.set_target_from_configuration(self._mink_config)
+
         # Record initial palm-relative object pose for retention reward
         self._initial_palm_rel = self._palm_relative_obj_pos()
-        # Smoothness baselines against the grasp-hold ctrl, not zero — so the
-        # first-step penalty measures how hard the policy jerks away from hold.
-        self._prev_action = self.data.ctrl.copy()
+
+        # Baseline: EE delta=0 (hold position), hand=current grasp ctrl
+        self._prev_action = np.concatenate([
+            np.zeros(6, dtype=np.float64),
+            self.data.ctrl[ARM_NU:ARM_NU + HAND_NU].copy(),
+        ])
         self._step_count = 0
         return self._obs(), {"slip_mag": 0.0, "retention": 0.0}
 
     def step(self, action):
-        self.data.ctrl[:] = action
+        # Decode 22D action: [ee_pos_delta(3), ee_rot_delta(3), hand_ctrl(16)]
+        ee_pos_delta = np.asarray(action[:3], dtype=np.float64)
+        ee_rot_delta = np.asarray(action[3:6], dtype=np.float64)
+        hand_ctrl = np.asarray(action[6:22], dtype=np.float64)
+
+        # Read current EE pose from MuJoCo site
+        ee_pos = self.data.site_xpos[self._ee_site].copy()
+        ee_xmat = self.data.site_xmat[self._ee_site].reshape(3, 3).copy()
+
+        # Integrate target EE pose: position delta in world frame, rotation via axis-angle
+        target_pos = ee_pos + ee_pos_delta
+        target_so3 = mink.SO3.from_matrix(ee_xmat) @ mink.SO3.exp(ee_rot_delta)
+        target_se3 = mink.SE3.from_rotation_and_translation(target_so3, target_pos)
+
+        # Solve differential IK for arm joints
+        self._mink_config.update(self.data.qpos)
+        self._ee_task.set_target(target_se3)
+        vel = mink.solve_ik(
+            self._mink_config,
+            [self._ee_task, self._posture_task],
+            self._ik_dt,
+            "daqp",
+            damping=1e-3,
+            limits=self._mink_limits,
+        )
+        self._mink_config.integrate_inplace(vel, self._ik_dt)
+
+        # Write arm ctrl (from IK) and hand ctrl (direct absolute targets)
+        self.data.ctrl[:ARM_NU] = self._mink_config.q[:ARM_NU]
+        self.data.ctrl[ARM_NU:ARM_NU + HAND_NU] = hand_ctrl
 
         # Random disturbance force on object (PDF item 8)
         self.last_applied_force = np.zeros(3, dtype=np.float64)
@@ -232,11 +302,13 @@ class GraspEnv(gym.Env):
         dropped = displacement > self.drop_threshold
         r_retention = -REWARD_RETENTION_SCALE * displacement
         r_drop = REWARD_DROP_PENALTY if dropped else 0.0
-        r_smooth = -REWARD_SMOOTH_ALPHA * float(np.linalg.norm(action - self._prev_action))
+        r_smooth = -REWARD_SMOOTH_ALPHA * float(
+            np.linalg.norm(np.asarray(action, dtype=np.float64) - self._prev_action)
+        )
         r_alive = self.survival_bonus if not dropped else 0.0
         reward = r_retention + r_drop + r_smooth + r_alive
 
-        self._prev_action = np.array(action, dtype=np.float64)
+        self._prev_action = np.asarray(action, dtype=np.float64)
         truncated = self._step_count >= self.timeout_steps
         slip = self._compute_slip()
         info = {
