@@ -29,18 +29,18 @@ from stable_baselines3.common.callbacks import (
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 
 
-def _make_env(seed: int):
+def _make_env(seed: int, force_mag: float):
     """Factory for a single GraspEnv instance (must be importable for subprocess)."""
     def _init():
         from scripts.env import GraspEnv
-        env = GraspEnv()
+        env = GraspEnv(force_mag=force_mag)
         env.reset(seed=seed)
         return env
     return _init
 
 
-def make_vec_env(n_envs: int, seed: int = 0) -> SubprocVecEnv:
-    fns = [_make_env(seed + i) for i in range(n_envs)]
+def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0) -> SubprocVecEnv:
+    fns = [_make_env(seed + i, force_mag) for i in range(n_envs)]
     return SubprocVecEnv(fns, start_method="fork")
 
 
@@ -79,6 +79,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--n-envs", type=int, default=4)
     parser.add_argument("--run-name", type=str, default=f"ppo-grasp-{ts}")
     parser.add_argument("--log-dir", type=str, default="runs/")
+    parser.add_argument("--force-mag", type=float, default=5.0,
+                        help="Disturbance force magnitude (0=disable)")
     return parser.parse_args()
 
 
@@ -92,13 +94,13 @@ def main() -> None:
 
     print(f"Run: {args.run_name}")
     print(f"Log dir: {run_dir}")
-    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}")
+    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}")
 
     # Training envs
-    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0))
+    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag))
 
     # Single eval env
-    eval_env = VecMonitor(make_vec_env(1, seed=9999))
+    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag))
 
     # Callbacks
     checkpoint_cb = CheckpointCallback(
@@ -125,6 +127,7 @@ def main() -> None:
         batch_size=256,
         learning_rate=3e-4,
         tensorboard_log=str(tb_dir),
+        device="cpu",
         verbose=0,
     )
 
