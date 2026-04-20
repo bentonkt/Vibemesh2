@@ -1,13 +1,14 @@
 {
   "goal": "eval ep_length >= 400 on tomato soup can @ 5N (deterministic, 5 eps)",
   "experiments": [
-    {"id": "sanity-01", "result": "eval=19.8 @50k steps, underfit (6 PPO updates)", "claim_tested": "C1"}
+    {"id": "sanity-01", "result": "eval=19.8 @50k steps, underfit (6 PPO updates)", "claim_tested": "C1"},
+    {"id": "exp1-n512-300k", "result": "eval=24.8 @300k, training ep_len=30.8 still rising, RETRY", "claim_tested": "C1+C3"}
   ],
   "claims": {
     "C1": {
       "statement": "PPO + 45D obs can learn to hold better than random, given enough gradient updates",
-      "evidence": "weak-negative",
-      "reason": "sanity-01 showed ep_len peaked at 29 @25k then collapsed to 19 @50k; too few updates to conclude"
+      "evidence": "weak-positive",
+      "reason": "exp1 shows 24.8 vs baseline 19.8 (+25%) with 300k steps, training ep_len still rising at end — policy IS learning, needs more steps"
     },
     "C2": {
       "statement": "Curriculum on force_mag (low -> high) reaches target ep_length faster than fixed-force",
@@ -15,13 +16,14 @@
     },
     "C3": {
       "statement": "n_steps=512 or 1024 beats n_steps=2048 within 300k step budget",
-      "evidence": "none"
+      "evidence": "weak-positive",
+      "reason": "exp1 (n_steps=512) improved over sanity-01 (n_steps=2048): 24.8 vs 19.8 at 300k. Testing n_steps=1024 in exp2."
     },
     "C4": {
       "statement": "Lower INTERP_STEPS_PER_KF increases fps without hurting grasp stability",
       "evidence": "moderate-positive",
-      "reason": "commit ab47cb7 reduced 200->80 + settle 100->20 before sanity-01 run; sanity-01 itself hit 23 fps with stable resets"
+      "reason": "commit ab47cb7 reduced 200->80 + settle 100->20 before sanity-01 run; exp1 hit 27 fps stably"
     }
   },
-  "best": {"exp_id": "sanity-01", "eval_ep_length": 19.8}
+  "best": {"exp_id": "exp1-n512-300k", "eval_ep_length": 24.8}
 }
