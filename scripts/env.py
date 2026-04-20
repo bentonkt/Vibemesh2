@@ -37,8 +37,11 @@ from scripts.test_scene import build_scene  # noqa: E402
 
 DEFAULT_KEYFRAMES = PROJECT_ROOT / "config" / "grasp_keyframes.json"
 
-# Steps to interpolate between each pair of keyframes during replay
-INTERP_STEPS_PER_KF = 200  # 1 second at 200 Hz
+# Steps to interpolate between each pair of keyframes during replay.
+# 30 steps × 5 substeps = 0.15 s simulated per keyframe — fast enough for RL
+# resets while still giving physics time to close contacts. The viewer/demo
+# path can override this by passing a subclass or using test_scene.py directly.
+INTERP_STEPS_PER_KF = 80
 # Physics substeps per interpolation step (matches arrow_key_grasp)
 REPLAY_SUBSTEPS = 5
 
@@ -168,7 +171,7 @@ class GraspEnv(gym.Env):
             current_ctrl = target_ctrl.copy()
 
         # Hold final keyframe briefly to let contacts settle
-        for _ in range(100):
+        for _ in range(20):
             for _ in range(REPLAY_SUBSTEPS):
                 mujoco.mj_step(self.model, self.data)
 
