@@ -1,69 +1,47 @@
 Run: exp7-ee-delta-survival
 Log dir: runs/exp7-ee-delta-survival
 Total steps: 300,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.1
-[   10000] ep_len=  22.4 ep_rew=  -12.05 fps=   25
-[   20000] ep_len=  22.5 ep_rew=  -11.96 fps=   25
-Eval num_timesteps=25000, episode_reward=-12.21 +/- 0.24
-Episode length: 23.00 +/- 1.67
+[   10000] ep_len=  22.0 ep_rew=  -12.00 fps=   26
+[   20000] ep_len=  22.4 ep_rew=  -12.02 fps=   26
+Eval num_timesteps=25000, episode_reward=-11.81 +/- 0.16
+Episode length: 20.80 +/- 1.33
 New best mean reward!
-[   30000] ep_len=  23.1 ep_rew=  -11.96 fps=   25
-[   40000] ep_len=  24.1 ep_rew=  -11.99 fps=   26
-Eval num_timesteps=50000, episode_reward=-11.43 +/- 0.34
-Episode length: 26.00 +/- 1.10
+[   30000] ep_len=  22.1 ep_rew=  -12.05 fps=   26
+[   40000] ep_len=  22.2 ep_rew=  -12.01 fps=   26
+Eval num_timesteps=50000, episode_reward=-11.78 +/- 0.19
+Episode length: 20.80 +/- 1.17
 New best mean reward!
-[   50000] ep_len=  24.9 ep_rew=  -11.95 fps=   26
-[   60000] ep_len=  26.2 ep_rew=  -11.93 fps=   26
-[   70000] ep_len=  26.1 ep_rew=  -11.87 fps=   27
-Eval num_timesteps=75000, episode_reward=-11.51 +/- 0.25
-Episode length: 25.60 +/- 1.62
-[   80000] ep_len=  27.7 ep_rew=  -11.86 fps=   27
-[   90000] ep_len=  29.0 ep_rew=  -11.82 fps=   28
-Eval num_timesteps=100000, episode_reward=-11.43 +/- 0.26
-Episode length: 25.40 +/- 1.74
-[  100000] ep_len=  31.6 ep_rew=  -11.84 fps=   28
-[  110000] ep_len=  35.0 ep_rew=  -11.79 fps=   29
-[  120000] ep_len=  38.9 ep_rew=  -11.70 fps=   30
-Eval num_timesteps=125000, episode_reward=-11.07 +/- 0.16
-Episode length: 28.20 +/- 1.60
+[   50000] ep_len=  22.3 ep_rew=  -11.98 fps=   26
+[   60000] ep_len=  22.5 ep_rew=  -11.98 fps=   26
+[   70000] ep_len=  22.7 ep_rew=  -11.93 fps=   26
+Eval num_timesteps=75000, episode_reward=-11.57 +/- 0.25
+Episode length: 22.80 +/- 1.17
 New best mean reward!
-[  130000] ep_len=  43.1 ep_rew=  -11.52 fps=   31
-[  140000] ep_len=  46.6 ep_rew=  -11.59 fps=   32
-Eval num_timesteps=150000, episode_reward=-10.77 +/- 0.15
-Episode length: 30.40 +/- 1.50
+[   80000] ep_len=  22.5 ep_rew=  -11.87 fps=   26
+[   90000] ep_len=  22.8 ep_rew=  -11.84 fps=   26
+Eval num_timesteps=100000, episode_reward=-11.56 +/- 0.28
+Episode length: 22.40 +/- 1.62
 New best mean reward!
-[  150000] ep_len=  46.9 ep_rew=  -11.67 fps=   32
-[  160000] ep_len=  50.6 ep_rew=  -11.91 fps=   33
-[  170000] ep_len=  54.7 ep_rew=  -11.66 fps=   34
-Eval num_timesteps=175000, episode_reward=-10.36 +/- 0.20
-Episode length: 41.00 +/- 2.10
+[  100000] ep_len=  23.0 ep_rew=  -11.88 fps=   26
+[  110000] ep_len=  23.4 ep_rew=  -11.89 fps=   26
+[  120000] ep_len=  23.8 ep_rew=  -11.84 fps=   26
+Eval num_timesteps=125000, episode_reward=-11.36 +/- 0.10
+Episode length: 23.00 +/- 0.63
 New best mean reward!
-[  180000] ep_len=  57.5 ep_rew=  -12.10 fps=   35
-[  190000] ep_len=  59.9 ep_rew=  -12.07 fps=   36
-Eval num_timesteps=200000, episode_reward=-10.78 +/- 0.20
-Episode length: 44.00 +/- 1.26
-[  200000] ep_len=  65.4 ep_rew=  -12.22 fps=   37
-[  210000] ep_len=  66.6 ep_rew=  -12.68 fps=   37
-[  220000] ep_len=  70.9 ep_rew=  -12.80 fps=   38
-Eval num_timesteps=225000, episode_reward=-8.81 +/- 0.26
-Episode length: 62.20 +/- 2.99
+[  130000] ep_len=  23.6 ep_rew=  -11.81 fps=   26
+[  140000] ep_len=  23.8 ep_rew=  -11.78 fps=   26
+Eval num_timesteps=150000, episode_reward=-11.21 +/- 0.20
+Episode length: 24.20 +/- 0.98
 New best mean reward!
-[  230000] ep_len=  79.0 ep_rew=  -12.77 fps=   39
-[  240000] ep_len=  83.5 ep_rew=  -13.32 fps=   40
-Eval num_timesteps=250000, episode_reward=-8.63 +/- 1.32
-Episode length: 132.80 +/- 13.35
+[  150000] ep_len=  24.9 ep_rew=  -11.78 fps=   26
+[  160000] ep_len=  24.8 ep_rew=  -11.80 fps=   26
+[  170000] ep_len=  24.9 ep_rew=  -11.73 fps=   27
+Eval num_timesteps=175000, episode_reward=-11.36 +/- 0.28
+Episode length: 23.60 +/- 1.20
+[  180000] ep_len=  25.1 ep_rew=  -11.75 fps=   27
+[  190000] ep_len=  25.4 ep_rew=  -11.75 fps=   27
+Eval num_timesteps=200000, episode_reward=-11.06 +/- 0.16
+Episode length: 22.20 +/- 0.75
 New best mean reward!
-[  250000] ep_len=  92.1 ep_rew=  -13.75 fps=   41
-[  260000] ep_len=  97.4 ep_rew=  -14.45 fps=   42
-[  270000] ep_len= 105.4 ep_rew=  -15.04 fps=   43
-Eval num_timesteps=275000, episode_reward=-8.62 +/- 1.04
-Episode length: 124.60 +/- 9.33
-New best mean reward!
-[  280000] ep_len= 114.0 ep_rew=  -15.29 fps=   44
-[  290000] ep_len= 116.1 ep_rew=  -15.49 fps=   45
-Eval num_timesteps=300000, episode_reward=-5.73 +/- 1.53
-Episode length: 135.00 +/- 21.05
-New best mean reward!
-[  300000] ep_len= 110.9 ep_rew=  -15.03 fps=   46
-
-Final model saved to runs/exp7-ee-delta-survival/final.zip
-Total wall time: 6524.7s
+[  200000] ep_len=  26.1 ep_rew=  -11.74 fps=   27
+[  210000] ep_len=  26.2 ep_rew=  -11.71 fps=   27
