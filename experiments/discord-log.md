@@ -36,3 +36,55 @@ Intended messages for channel #research (1486101259336552549). Discord MCP tool 
 
 `exp6-ee-delta` on shitter and 3090 are **untouched** — all JAX work in separate files.
 
+---
+
+## 2026-04-21 — Arc-2 Experiment Results
+
+### Exp 1/3: exp7-ee-delta-survival (shitter)
+```
+exp7 (EE-delta + bonus=0.1, n_steps=512, 300k)
+  eval ep_len: 37 → 135.0 @ 300k (prior best: exp5=100.2)
+  Claim C7: partial — EE-delta + bonus=0.1 works, late breakthrough at 250k
+  Note: survival_bonus=0.1 was insufficient to break out early, but policy
+        still improved past exp5 eventually. Confirms C7 but slowly.
+  Next: run exp8 with bonus=0.5 to test if higher bonus accelerates breakthrough
+```
+
+### Exp 2/3: exp8-ee-delta-sb05 (3090) — GOAL ACHIEVED
+```
+exp8 (EE-delta + bonus=0.5, n_steps=512, 300k)
+  eval ep_len: 37 → 416.4 @ 200k steps  🎯 GOAL HIT (>= 400)
+  Claim C7: STRONG-POSITIVE — EE-delta + bonus=0.5 = dramatic phase transition
+  Claim C8: CONFIRMED — bonus >= 0.5 required for EE-delta action space
+  Key finding: 175k→200k phase transition (+260 ep_len in one 25k window)
+  Next: warm-start from best model to push toward 500/500
+```
+
+### Exp 3/3: exp10-warm-sb05 (3090 warm-start) — PERFECT SCORE
+```
+exp10 (warm-start from exp8 best + 500k steps)
+  eval ep_len: 416 → 500.0 ± 0.00 @ 100k warm-start steps  🏆 PERFECT SCORE
+  All 5 deterministic eval episodes hit 500-step timeout
+  Consistent 500/500 from 400k warm-start onward
+  Theoretical maximum performance — arc-2 COMPLETE
+  Next: Arc-3 options — robustness testing, hardware transfer prep
+```
+
+### Arc-2 Summary
+```
+ARC 2 COMPLETE — Goal exceeded.
+
+Started: eval 100.2 (exp5, arc-1 best)
+Goal:    eval >= 400
+Achieved: eval 416.4 (exp8, 200k steps)
+Maximum:  eval 500/500 (exp10, 100k warm-start)
+
+Key finding: EE-delta action space + survival_bonus=0.5 + PPO(n_steps=512)
+discovered a qualitatively stable grasp strategy via phase transition at 175k–200k.
+Warm-starting from the breakthrough model reaches theoretical maximum in 100k
+additional steps.
+
+Commits: worker/vibemesh-overseer-arc2 branch
+Final report: experiments/final-report-arc2.md
+```
+
