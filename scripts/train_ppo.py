@@ -95,7 +95,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--survival-bonus", type=float, default=0.0,
                         help="Per-step reward bonus for staying alive (0=disabled)")
     parser.add_argument("--retention-scale", type=float, default=10.0,
-                        help="Weight on palm-relative displacement penalty (default 10.0)")
+                        help="Scale on palm-relative displacement penalty (default 10.0)")
     return parser.parse_args()
 
 
