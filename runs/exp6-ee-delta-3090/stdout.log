@@ -1,0 +1,63 @@
+Run: exp6-ee-delta-3090
+Log dir: runs\exp6-ee-delta-3090
+Total steps: 300,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.0
+[   10000] ep_len=  22.0 ep_rew=  -14.10 fps=   24
+[   20000] ep_len=  21.9 ep_rew=  -14.02 fps=   24
+Eval num_timesteps=25000, episode_reward=-13.17 +/- 0.25
+Episode length: 18.80 +/- 0.75
+New best mean reward!
+[   30000] ep_len=  22.1 ep_rew=  -14.03 fps=   23
+[   40000] ep_len=  22.2 ep_rew=  -14.04 fps=   23
+Eval num_timesteps=50000, episode_reward=-13.51 +/- 0.40
+Episode length: 20.00 +/- 1.10
+[   50000] ep_len=  22.6 ep_rew=  -14.04 fps=   23
+[   60000] ep_len=  23.0 ep_rew=  -14.04 fps=   23
+[   70000] ep_len=  23.2 ep_rew=  -13.96 fps=   23
+Eval num_timesteps=75000, episode_reward=-13.72 +/- 0.23
+Episode length: 23.80 +/- 0.75
+[   80000] ep_len=  23.1 ep_rew=  -13.93 fps=   23
+[   90000] ep_len=  24.1 ep_rew=  -14.00 fps=   24
+Eval num_timesteps=100000, episode_reward=-13.46 +/- 0.19
+Episode length: 24.00 +/- 0.89
+[  100000] ep_len=  24.1 ep_rew=  -13.96 fps=   24
+[  110000] ep_len=  24.1 ep_rew=  -13.93 fps=   24
+[  120000] ep_len=  24.3 ep_rew=  -13.93 fps=   24
+Eval num_timesteps=125000, episode_reward=-13.40 +/- 0.10
+Episode length: 22.40 +/- 0.49
+[  130000] ep_len=  24.5 ep_rew=  -13.84 fps=   24
+[  140000] ep_len=  24.9 ep_rew=  -13.86 fps=   24
+Eval num_timesteps=150000, episode_reward=-13.09 +/- 0.19
+Episode length: 23.80 +/- 0.75
+New best mean reward!
+[  150000] ep_len=  24.8 ep_rew=  -13.87 fps=   24
+[  160000] ep_len=  24.9 ep_rew=  -13.83 fps=   24
+[  170000] ep_len=  25.2 ep_rew=  -13.85 fps=   25
+Eval num_timesteps=175000, episode_reward=-13.08 +/- 0.20
+Episode length: 24.20 +/- 0.40
+New best mean reward!
+[  180000] ep_len=  25.8 ep_rew=  -13.89 fps=   25
+[  190000] ep_len=  26.2 ep_rew=  -13.84 fps=   25
+Eval num_timesteps=200000, episode_reward=-13.11 +/- 0.22
+Episode length: 25.40 +/- 0.49
+[  200000] ep_len=  26.3 ep_rew=  -13.83 fps=   25
+[  210000] ep_len=  27.5 ep_rew=  -13.85 fps=   25
+[  220000] ep_len=  28.3 ep_rew=  -13.83 fps=   25
+Eval num_timesteps=225000, episode_reward=-13.50 +/- 0.21
+Episode length: 30.40 +/- 1.02
+[  230000] ep_len=  29.4 ep_rew=  -13.92 fps=   25
+[  240000] ep_len=  30.0 ep_rew=  -13.91 fps=   25
+Eval num_timesteps=250000, episode_reward=-13.43 +/- 0.22
+Episode length: 29.00 +/- 1.10
+[  250000] ep_len=  31.3 ep_rew=  -13.93 fps=   26
+[  260000] ep_len=  33.3 ep_rew=  -14.03 fps=   26
+[  270000] ep_len=  34.9 ep_rew=  -14.04 fps=   26
+Eval num_timesteps=275000, episode_reward=-13.16 +/- 0.07
+Episode length: 30.00 +/- 0.00
+[  280000] ep_len=  37.4 ep_rew=  -14.18 fps=   26
+[  290000] ep_len=  42.4 ep_rew=  -14.77 fps=   27
+Eval num_timesteps=300000, episode_reward=-13.32 +/- 0.23
+Episode length: 35.40 +/- 1.50
+[  300000] ep_len=  46.8 ep_rew=  -14.93 fps=   27
+
+Final model saved to runs\exp6-ee-delta-3090\final.zip
+Total wall time: 10945.1s

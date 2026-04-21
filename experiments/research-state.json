@@ -6,32 +6,47 @@
     {"id": "exp2-n1024-300k", "result": "eval=18.2 @300k, FAIL — worse than baseline. C3 resolved: n_steps=512 wins.", "claim_tested": "C3"},
     {"id": "exp3a-curr-1n", "result": "eval=17.6 @150k (1N force), 1N behaves same as 5N — force NOT primary bottleneck", "claim_tested": "C2"},
     {"id": "exp3b-curr-5n", "result": "eval=25.8 @150k (5N fine-tune on 1N warm-start), modest +1 over exp1 at same budget, RETRY", "claim_tested": "C2"},
-    {"id": "exp4-no-force-300k", "result": "PARTIAL (killed at 150k by tmux window kill). eval ep_len 16–20 with force=0 — confirms drop is policy-induced not force-induced. FAIL vs 25.8 target, but informative negative.", "claim_tested": "C5 (implicit: force IS the bottleneck — rejected)"},
-    {"id": "exp5-survival-bonus", "result": "SUCCESS. eval ep_len 100.2 ± 24.6 @ 275k (vs prior best 25.8); training rollout 127.7 still rising at 300k. Breakthrough at ~200k steps. Survival-bonus hypothesis validated.", "claim_tested": "C5 (reward shaping — survival bonus)"}
+    {"id": "exp4-no-force-300k", "result": "PARTIAL. eval ep_len 16–20 with force=0 — confirms drop is policy-induced not force-induced.", "claim_tested": "force-as-bottleneck (rejected)"},
+    {"id": "exp5-survival-bonus", "result": "SUCCESS. eval ep_len 100.2 @ 275k (vs prior best 25.8). Breakthrough at ~200k steps. 23D raw joint ctrl + survival bonus.", "claim_tested": "C5 (survival bonus)"},
+    {"id": "exp6-ee-delta (shitter)", "result": "eval=37.2 @ 300k, steady climb, no breakthrough. 22D EE-delta + 3-term reward (NO survival bonus). Better than exp1 but far below exp5.", "claim_tested": "C6 (EE-delta action space)"},
+    {"id": "exp6-ee-delta-3090", "result": "eval=35.4 @ 300k. Matches shitter run within noise — reproducible.", "claim_tested": "C6"}
   ],
   "claims": {
     "C1": {
       "statement": "PPO + 45D obs can learn to hold better than random, given enough gradient updates",
-      "evidence": "positive",
-      "reason": "exp5 eval ep_len 100.2 @ 275k (5x baseline), training 127.7 still rising. Gradient updates alone weren't enough — survival bonus was the unlock."
+      "evidence": "positive"
     },
     "C2": {
       "statement": "Curriculum on force_mag (low -> high) reaches target ep_length faster than fixed-force",
-      "evidence": "weak-positive",
-      "reason": "exp3 curriculum: 25.8 vs exp1's 24.8 at same 300k budget (+4%). Modest benefit. Phase A (1N) performed same as 5N, reducing expected C2 advantage."
+      "evidence": "weak-positive, moot",
+      "reason": "Not the primary bottleneck"
     },
     "C3": {
-      "statement": "n_steps=512 or 1024 beats n_steps=2048 within 300k step budget",
-      "evidence": "positive",
-      "reason": "exp1 (n_steps=512) = 24.8 beats exp2 (n_steps=1024) = 18.2 and sanity-01 (n_steps=2048) = 19.8. Use n_steps=512."
+      "statement": "n_steps=512 beats larger n_steps at fixed 300k budget",
+      "evidence": "positive"
     },
     "C4": {
       "statement": "Lower INTERP_STEPS_PER_KF increases fps without hurting grasp stability",
-      "evidence": "moderate-positive",
-      "reason": "All experiments hit 26-30 fps stably. Reset speed not a bottleneck."
+      "evidence": "moderate-positive"
+    },
+    "C5": {
+      "statement": "Per-step survival bonus (+0.1 while held) unlocks learning",
+      "evidence": "positive",
+      "reason": "exp5 eval 100.2 vs exp1 24.8. Removing it in exp6 dropped performance back to ~37."
+    },
+    "C6": {
+      "statement": "22D EE-delta action space (PDF item 6) beats 23D raw joint ctrl",
+      "evidence": "weak-positive",
+      "reason": "exp6 eval 37 vs exp1 25 at same 300k budget without survival bonus. Helps, but minor compared to survival bonus."
+    },
+    "C7": {
+      "statement": "EE-delta action space + survival bonus compound — each addresses a different failure mode",
+      "evidence": "pending — target of exp7"
     }
   },
   "best": {"exp_id": "exp5-survival-bonus", "eval_ep_length": 100.2},
-  "key_finding": "Survival bonus (+0.1/step) broke the ~25-step ceiling. Eval ep_len climbed from flat ~20 (25k-150k) to 100.2 at 275k. Training rollout still rising at 300k. Reward shaping was the primary unlock — not gradient budget, not force curriculum. Retention penalty is now over-dominant at long horizons (reward decreases as ep_len increases), next tuning target.",
-  "overseer_loop_complete": true
+  "key_finding": "Two independent unlocks: (a) survival bonus (+0.1/step) provides the positive gradient to stay-alive; (b) EE-delta action space prevents the policy from wiggling the arm. exp5 had (a) without (b) and hit 100. exp6 had (b) without (a) and hit 37. exp7 should combine both.",
+  "overseer_loop_complete": false,
+  "arc_2_started": "2026-04-21",
+  "arc_2_goal": "Combine EE-delta + survival bonus, explore reward tuning and longer training, run experiments in parallel on shitter + 3090 overnight."
 }
