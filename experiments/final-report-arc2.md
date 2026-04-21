@@ -20,8 +20,9 @@ The combination produced a policy that underwent a dramatic phase transition bet
 
 | Exp | Config | Eval @ 200k | Notes |
 |-----|--------|-------------|-------|
-| exp7 (shitter) | EE-delta + bonus=0.1 + n=512 | ~30 (stalled) | Insufficient bonus |
-| **exp8 (3090)** | **EE-delta + bonus=0.5 + n=2048** | **416.4** | **GOAL** |
+| exp7 (shitter) | EE-delta + bonus=0.1 + n_steps=512 | 135.0 @ 300k (breakthrough at 250k) | Late breakthrough; sole diff from exp8 is bonus |
+| **exp8 (3090)** | **EE-delta + bonus=0.5 + n_steps=512** | **416.4** | **GOAL** |
+| exp10 (3090 warm-start) | Warm from exp8 best, 500k steps | **500.0 ± 0.00** | **PERFECT SCORE — exceeded goal** |
 
 ### exp8 Eval Trajectory
 
@@ -92,7 +93,7 @@ EE-delta without bonus: +12 over raw joints. EE-delta with sufficient bonus: +31
 python scripts/train_ppo.py \
   --total-steps 300000 --n-envs 4 \
   --survival-bonus 0.5 --retention-scale 10.0 \
-  --force-mag 5.0 --n-steps 2048 --batch-size 256
+  --force-mag 5.0 --n-steps 512 --batch-size 256
 ```
 
 ---
@@ -107,18 +108,21 @@ python scripts/train_ppo.py \
 
 ---
 
-## Post-Report: exp10 Warm-Start (running)
+## Post-Report: exp10 Warm-Start (COMPLETE)
 
-exp10 warm-starts from exp8's best checkpoint (200k eval 416.4):
+exp10 warm-starts from exp8's best checkpoint (200k eval 416.4), run to 500k warm-start steps:
 
 | eval @ step (warm-start) | ep_length | notes |
 |--------------------------|-----------|-------|
 | 25k | 338.8 ± 105.19 | policy retained near-peak immediately |
 | 50k | 425.2 ± 93.69 | **new record** — exceeded exp8 peak in 50k steps |
 | 75k | 335.6 ± 87.70 | variance dip (5-ep noise) |
-| **100k** | **500.0 ± 0.00** | **PERFECT SCORE — all 5 eps hit 500-step timeout** |
+| **100k** | **500.0 ± 0.00** | **PERFECT SCORE — first 500/500** |
+| 200k–375k | 343–487 | eval variance; training ep_len still growing |
+| **400k** | **500.0 ± 0.00** | policy locked in; 500/500 every eval from here |
+| **500k** | **500.0 ± 0.00** | **final: 5/5 eps hit timeout. Wall time: 3495.6s** |
 
-**THEORETICAL MAXIMUM ACHIEVED.** The policy holds the tomato soup can for every single step against 5N disturbance, across all 5 deterministic evaluation episodes. Warm-start achieved perfection in 100k additional steps (equivalent to 300k total training).
+**THEORETICAL MAXIMUM ACHIEVED AND SUSTAINED.** The policy holds the tomato soup can for every single step against continuous 5N disturbance, across all 5 deterministic evaluation episodes. Consistent 500/500 from 400k warm-start onward.
 
 ---
 
