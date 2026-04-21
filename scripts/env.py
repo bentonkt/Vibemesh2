@@ -57,7 +57,13 @@ REWARD_SMOOTH_ALPHA = 0.001     # weight on action delta penalty
 REWARD_ALIVE_BONUS = 0.0        # per-step survival bonus (0=disabled)
 
 # Disturbance force (PDF item 8)
+# Sustained-pull model: resample direction + magnitude at a random interval,
+# hold between resamples. More realistic than per-step white noise and matches
+# the "yank" semantics in the spec. Intervals in env steps (each = n_substeps
+# * 5ms = 0.025s of sim time by default).
 DEFAULT_FORCE_MAG = 5.0
+DEFAULT_FORCE_PERIOD_MIN = 20   # 0.5 s at 40 Hz env rate
+DEFAULT_FORCE_PERIOD_MAX = 80   # 2.0 s at 40 Hz env rate
 
 # EE-delta action bounds (PDF item 6)
 EE_POS_DELTA_BOUND = 0.01   # ±0.01 m per step
@@ -78,6 +84,8 @@ class GraspEnv(gym.Env):
         timeout_steps: int = 500,
         drop_threshold: float = 0.05,
         force_mag: float = DEFAULT_FORCE_MAG,
+        force_period_min: int = DEFAULT_FORCE_PERIOD_MIN,
+        force_period_max: int = DEFAULT_FORCE_PERIOD_MAX,
         survival_bonus: float = REWARD_ALIVE_BONUS,
         retention_scale: float = REWARD_RETENTION_SCALE,
         keyframes_path: str | Path | None = None,
@@ -88,6 +96,8 @@ class GraspEnv(gym.Env):
         self.timeout_steps = timeout_steps
         self.drop_threshold = drop_threshold
         self.force_mag = force_mag
+        self.force_period_min = max(1, int(force_period_min))
+        self.force_period_max = max(self.force_period_min, int(force_period_max))
         self.survival_bonus = survival_bonus
         self.retention_scale = retention_scale
 
@@ -161,6 +171,10 @@ class GraspEnv(gym.Env):
         self._step_count = 0
         self._prev_action = np.zeros(22, dtype=np.float64)
         self._initial_palm_rel: np.ndarray | None = None
+
+        # Sustained-pull force state (resampled periodically in step)
+        self._current_force = np.zeros(3, dtype=np.float64)
+        self._force_resample_at = 0
 
         # Load keyframes
         kf_path = Path(keyframes_path) if keyframes_path else DEFAULT_KEYFRAMES
@@ -246,6 +260,9 @@ class GraspEnv(gym.Env):
             self.data.ctrl[ARM_NU:ARM_NU + HAND_NU].copy(),
         ])
         self._step_count = 0
+        # Force will resample immediately on first step
+        self._current_force = np.zeros(3, dtype=np.float64)
+        self._force_resample_at = 0
         return self._obs(), {"slip_mag": 0.0, "retention": 0.0}
 
     def step(self, action):
@@ -280,19 +297,30 @@ class GraspEnv(gym.Env):
         self.data.ctrl[:ARM_NU] = self._mink_config.q[:ARM_NU]
         self.data.ctrl[ARM_NU:ARM_NU + HAND_NU] = hand_ctrl
 
-        # Random disturbance force on object (PDF item 8)
-        self.last_applied_force = np.zeros(3, dtype=np.float64)
-        if self.force_mag > 0:
+        # Sustained-pull disturbance force (PDF item 8). Resample direction +
+        # magnitude at a random interval (force_period_min..max env steps),
+        # hold constant between resamples. More realistic than per-step white
+        # noise and matches the "yank" semantics of the spec.
+        if self.force_mag > 0 and self._step_count >= self._force_resample_at:
             direction = self.np_random.standard_normal(3)
             direction /= max(np.linalg.norm(direction), 1e-8)
             magnitude = self.np_random.uniform(0, self.force_mag)
-            self.last_applied_force = direction * magnitude
-            self.data.xfrc_applied[self._obj_body][:3] = self.last_applied_force
+            self._current_force = direction * magnitude
+            period = int(self.np_random.integers(
+                self.force_period_min, self.force_period_max + 1
+            ))
+            self._force_resample_at = self._step_count + period
+        elif self.force_mag <= 0:
+            self._current_force = np.zeros(3, dtype=np.float64)
+
+        self.last_applied_force = self._current_force.copy()
+        self.data.xfrc_applied[self._obj_body][:3] = self._current_force
 
         for _ in range(self.n_substeps):
             mujoco.mj_step(self.model, self.data)
 
-        # Clear force after stepping (applied fresh each step)
+        # Clear xfrc after stepping — next step re-writes from _current_force.
+        # (Clearing here also ensures force_mag=0 paths don't leak stale force.)
         self.data.xfrc_applied[self._obj_body][:] = 0
 
         self._step_count += 1
