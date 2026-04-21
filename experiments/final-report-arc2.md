@@ -52,14 +52,12 @@ survival_bonus=0.5 (exp8) broke through — positive reward by 70k steps, eval 4
 
 **Conclusion**: EE-delta introduces more per-step action noise than raw joint ctrl. The IK solver generates small residual arm motion even for zero-delta actions. The survival signal must overpower the resulting displacement penalty. A 5× stronger bonus (0.5 vs 0.1) is required to escape the negative-reward basin.
 
-### Finding 2: n_steps=2048 may be better at long episode lengths
+### Finding 2: n_steps=512 remains effective at long episode lengths
 
-Prior work (exp3) established n_steps=512 as optimal when episodes are short (~25 steps). exp8 uses n_steps=2048 and outperforms everything. With episodes of 100–400 steps, larger rollouts provide:
-- More complete return estimates (fewer bootstrap truncations mid-episode)
-- Better signal for long-horizon credit assignment
-- More stable value function training
-
-This may partially explain why exp8 (n_steps=2048) outperforms exp7 (n_steps=512) even aside from the bonus magnitude.
+Both exp7 and exp8 use n_steps=512 — the only variable that differs is survival_bonus (0.1 vs 0.5).
+Prior work (C3) found n_steps=512 optimal at short ep_len. exp8 confirms it remains effective even
+at ep_len=400+. The learning instability from larger rollouts (exp2 with n_steps=1024) appears
+specific to the negative-reward regime; once positive reward is established, n_steps=512 converges well.
 
 ### Finding 3: Phase transition in learning
 
@@ -86,7 +84,7 @@ EE-delta without bonus: +12 over raw joints. EE-delta with sufficient bonus: +31
 - Timeout: 500 steps
 
 **Algorithm**: PPO (Stable-Baselines3)
-- n_envs=4, n_steps=2048, batch_size=256, learning_rate=3e-4
+- n_envs=4, n_steps=512, batch_size=256, learning_rate=3e-4
 - IK solver: mink daqp, dt=0.005s
 
 **Winning config (exp8)**:
