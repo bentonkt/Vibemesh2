@@ -155,7 +155,10 @@ def main() -> None:
                 f = env.last_applied_force
                 mag = float(np.linalg.norm(f))
                 if mag > 1e-6:
-                    start = env.data.xpos[env._obj_body].astype(np.float64)
+                    # xipos = body inertial frame (COM). For YCB meshes with
+                    # inertiafromgeom, this is the can's visual center; xpos
+                    # is the frame origin which can be several cm off the mesh.
+                    start = env.data.xipos[env._obj_body].astype(np.float64)
                     end = start + f.astype(np.float64) * args.arrow_scale
                     geom = viewer.user_scn.geoms[0]
                     geom.rgba[:] = [1.0, 0.2, 0.2, 0.9]
