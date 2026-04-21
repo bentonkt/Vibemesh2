@@ -29,20 +29,53 @@ from stable_baselines3.common.callbacks import (
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 
 
-def _make_env(seed: int, force_mag: float, survival_bonus: float = 0.0, retention_scale: float = 10.0):
+def _make_env(
+    seed: int,
+    force_mag: float,
+    survival_bonus: float = 0.0,
+    retention_scale: float = 10.0,
+    slip_penalty: float = 0.0,
+    force_mag_min: float | None = None,
+    force_mag_max: float | None = None,
+    object_offset_xy: float = 0.0,
+):
     """Factory for a single GraspEnv instance (must be importable for subprocess)."""
     def _init():
         from scripts.env import GraspEnv
-        env = GraspEnv(force_mag=force_mag, survival_bonus=survival_bonus, retention_scale=retention_scale)
+        env = GraspEnv(
+            force_mag=force_mag,
+            force_mag_min=force_mag_min,
+            force_mag_max=force_mag_max,
+            survival_bonus=survival_bonus,
+            retention_scale=retention_scale,
+            slip_penalty=slip_penalty,
+            object_offset_xy=object_offset_xy,
+        )
         env.reset(seed=seed)
         return env
     return _init
 
 
-def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0, survival_bonus: float = 0.0, retention_scale: float = 10.0) -> SubprocVecEnv:
+def make_vec_env(
+    n_envs: int,
+    seed: int = 0,
+    force_mag: float = 5.0,
+    survival_bonus: float = 0.0,
+    retention_scale: float = 10.0,
+    slip_penalty: float = 0.0,
+    force_mag_min: float | None = None,
+    force_mag_max: float | None = None,
+    object_offset_xy: float = 0.0,
+) -> SubprocVecEnv:
     import platform
     start_method = "fork" if platform.system() != "Windows" else "spawn"
-    fns = [_make_env(seed + i, force_mag, survival_bonus, retention_scale) for i in range(n_envs)]
+    fns = [
+        _make_env(
+            seed + i, force_mag, survival_bonus, retention_scale,
+            slip_penalty, force_mag_min, force_mag_max, object_offset_xy,
+        )
+        for i in range(n_envs)
+    ]
     return SubprocVecEnv(fns, start_method=start_method)
 
 
@@ -96,6 +129,14 @@ def parse_args() -> argparse.Namespace:
                         help="Per-step reward bonus for staying alive (0=disabled)")
     parser.add_argument("--retention-scale", type=float, default=10.0,
                         help="Scale on palm-relative displacement penalty (default 10.0)")
+    parser.add_argument("--slip-penalty", type=float, default=0.0,
+                        help="Weight on ||slip vector|| per step (0=disabled; PDF item 7)")
+    parser.add_argument("--force-mag-min", type=float, default=None,
+                        help="Min per-episode force magnitude (None=use --force-mag constant)")
+    parser.add_argument("--force-mag-max", type=float, default=None,
+                        help="Max per-episode force magnitude (None=use --force-mag constant)")
+    parser.add_argument("--object-offset-xy", type=float, default=0.0,
+                        help="Max per-episode XY offset for object spawn in meters (0=disabled)")
     return parser.parse_args()
 
 
@@ -109,13 +150,45 @@ def main() -> None:
 
     print(f"Run: {args.run_name}")
     print(f"Log dir: {run_dir}")
-    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}  survival_bonus: {args.survival_bonus}  retention_scale: {args.retention_scale}")
+    force_range_str = (
+        f"{args.force_mag_min}-{args.force_mag_max}"
+        if args.force_mag_min is not None and args.force_mag_max is not None
+        else f"{args.force_mag}"
+    )
+    print(
+        f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  "
+        f"force: {force_range_str}N  survival_bonus: {args.survival_bonus}  "
+        f"retention_scale: {args.retention_scale}  slip_penalty: {args.slip_penalty}  "
+        f"object_offset_xy: {args.object_offset_xy}"
+    )
 
+    env_kwargs = dict(
+        force_mag=args.force_mag,
+        survival_bonus=args.survival_bonus,
+        retention_scale=args.retention_scale,
+        slip_penalty=args.slip_penalty,
+        force_mag_min=args.force_mag_min,
+        force_mag_max=args.force_mag_max,
+        object_offset_xy=args.object_offset_xy,
+    )
     # Training envs
-    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag, survival_bonus=args.survival_bonus, retention_scale=args.retention_scale))
+    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, **env_kwargs))
 
-    # Single eval env
-    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag, survival_bonus=args.survival_bonus, retention_scale=args.retention_scale))
+    # Single eval env — fixed force_mag (no per-episode randomization) so eval
+    # is comparable across checkpoints. Use mid-range if a range is set.
+    eval_force = (
+        (args.force_mag_min + args.force_mag_max) / 2
+        if args.force_mag_min is not None and args.force_mag_max is not None
+        else args.force_mag
+    )
+    eval_env = VecMonitor(make_vec_env(
+        1, seed=9999,
+        force_mag=eval_force,
+        survival_bonus=args.survival_bonus,
+        retention_scale=args.retention_scale,
+        slip_penalty=args.slip_penalty,
+        object_offset_xy=0.0,
+    ))
 
     # Callbacks
     checkpoint_cb = CheckpointCallback(

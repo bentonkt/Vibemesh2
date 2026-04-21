@@ -55,6 +55,7 @@ REWARD_RETENTION_SCALE = 10.0   # weight on palm-relative displacement
 REWARD_DROP_PENALTY = -10.0     # terminal reward on drop
 REWARD_SMOOTH_ALPHA = 0.001     # weight on action delta penalty
 REWARD_ALIVE_BONUS = 0.0        # per-step survival bonus (0=disabled)
+REWARD_SLIP_PENALTY = 0.0       # weight on ||slip vector|| per step (0=disabled)
 
 # Disturbance force (PDF item 8)
 # Sustained-pull model: resample direction + magnitude at a random interval,
@@ -84,10 +85,14 @@ class GraspEnv(gym.Env):
         timeout_steps: int = 500,
         drop_threshold: float = 0.05,
         force_mag: float = DEFAULT_FORCE_MAG,
+        force_mag_min: float | None = None,
+        force_mag_max: float | None = None,
         force_period_min: int = DEFAULT_FORCE_PERIOD_MIN,
         force_period_max: int = DEFAULT_FORCE_PERIOD_MAX,
         survival_bonus: float = REWARD_ALIVE_BONUS,
         retention_scale: float = REWARD_RETENTION_SCALE,
+        slip_penalty: float = REWARD_SLIP_PENALTY,
+        object_offset_xy: float = 0.0,
         keyframes_path: str | Path | None = None,
     ) -> None:
         super().__init__()
@@ -96,10 +101,16 @@ class GraspEnv(gym.Env):
         self.timeout_steps = timeout_steps
         self.drop_threshold = drop_threshold
         self.force_mag = force_mag
+        # Optional per-episode randomization of force magnitude (sampled in reset).
+        # If force_mag_min/max are None, force_mag is constant across episodes.
+        self.force_mag_min = force_mag_min
+        self.force_mag_max = force_mag_max
         self.force_period_min = max(1, int(force_period_min))
         self.force_period_max = max(self.force_period_min, int(force_period_max))
         self.survival_bonus = survival_bonus
         self.retention_scale = retention_scale
+        self.slip_penalty = slip_penalty
+        self.object_offset_xy = float(object_offset_xy)
 
         self.model, self.data, self._temp_dir = build_scene(object_id)
         self._home_key = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_KEY, "home")
@@ -232,9 +243,21 @@ class GraspEnv(gym.Env):
         super().reset(seed=seed)
         mujoco.mj_resetDataKeyframe(self.model, self.data, self._home_key)
 
+        # Per-episode force magnitude randomization — prevents the policy from
+        # converging on one pose that's robust to a single fixed magnitude.
+        if self.force_mag_min is not None and self.force_mag_max is not None:
+            self.force_mag = float(self.np_random.uniform(
+                self.force_mag_min, self.force_mag_max
+            ))
+
         # Place object below the hand (same XY as EE, low Z)
         mujoco.mj_forward(self.model, self.data)
         hand_xy = self.data.site_xpos[self._ee_site][:2].copy()
+        if self.object_offset_xy > 0:
+            offset = self.np_random.uniform(
+                -self.object_offset_xy, self.object_offset_xy, size=2
+            )
+            hand_xy = hand_xy + offset
         self.data.qpos[self._obj_qadr:self._obj_qadr + 3] = [
             hand_xy[0], hand_xy[1], 0.04,
         ]
@@ -330,23 +353,32 @@ class GraspEnv(gym.Env):
             self._palm_relative_obj_pos() - self._initial_palm_rel
         ))
         dropped = displacement > self.drop_threshold
+        slip = self._compute_slip()
+        slip_mag = float(np.linalg.norm(slip))
+
         r_retention = -self.retention_scale * displacement
         r_drop = REWARD_DROP_PENALTY if dropped else 0.0
         r_smooth = -REWARD_SMOOTH_ALPHA * float(
             np.linalg.norm(np.asarray(action, dtype=np.float64) - self._prev_action)
         )
         r_alive = self.survival_bonus if not dropped else 0.0
-        reward = r_retention + r_drop + r_smooth + r_alive
+        # Slip penalty (PDF item 7: "Add a slip magnitude penalty term once
+        # training is stable"). Forces the policy to actively minimize object
+        # motion relative to the palm, not just avoid dropping — defeats the
+        # open-loop-pose failure mode from exp10.
+        r_slip = -self.slip_penalty * slip_mag
+        reward = r_retention + r_drop + r_smooth + r_alive + r_slip
 
         self._prev_action = np.asarray(action, dtype=np.float64)
         truncated = self._step_count >= self.timeout_steps
-        slip = self._compute_slip()
         info = {
-            "slip_mag": float(np.linalg.norm(slip)),
+            "slip_mag": slip_mag,
             "dropped": dropped,
             "retention": displacement,
+            "force_mag": self.force_mag,
             "r_retention": r_retention,
             "r_smooth": r_smooth,
+            "r_slip": r_slip,
         }
         return self._obs(), reward, dropped, truncated, info
 
