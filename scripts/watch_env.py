@@ -66,7 +66,11 @@ def main() -> None:
                         help="Deterministic policy rollout (ignored without --model)")
     parser.add_argument("--force", type=float, default=5.0, help="Disturbance force magnitude (default: 5)")
     parser.add_argument("--show-forces", action="store_true",
-                        help="Render applied-force arrow on the object (xfrc_applied)")
+                        help="Render an arrow on the object each step showing xfrc_applied")
+    parser.add_argument("--arrow-scale", type=float, default=0.02,
+                        help="Length multiplier on the force arrow (m per N; default 0.02)")
+    parser.add_argument("--randomize", action="store_true",
+                        help="Fresh random seed each reset — new disturbance trajectory per episode")
     parser.add_argument("--sigma", type=float, default=0.2, help="OU noise sigma (default: 0.2)")
     parser.add_argument("--theta", type=float, default=0.15, help="OU noise mean reversion rate (default: 0.15)")
     parser.add_argument("--seed", type=int, default=42)
@@ -99,15 +103,16 @@ def main() -> None:
     print(f"Watching: {mode}, force={args.force}N, seed={args.seed}")
     print("Close the viewer window to exit.")
 
+    rng = np.random.default_rng(args.seed)
+
     with mujoco.viewer.launch_passive(
         model=env.model, data=env.data,
         show_left_ui=False, show_right_ui=False,
     ) as viewer:
         mujoco.mjv_defaultFreeCamera(env.model, viewer.cam)
-        if args.show_forces:
-            viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_PERTFORCE] = 1
         rate = RateLimiter(frequency=200.0, warn=False)
         step = 0
+        episode = 0
 
         while viewer.is_running():
             if model is not None:
@@ -126,22 +131,39 @@ def main() -> None:
             if step % 50 == 0 or terminated:
                 z = float(env.data.xpos[env._obj_body, 2])
                 print(
-                    f"step {step:4d}: r={reward:+.4f} slip={info['slip_mag']:.4f} "
+                    f"ep {episode} step {step:4d}: r={reward:+.4f} slip={info['slip_mag']:.4f} "
                     f"ret={info['retention']:.4f} z={z:.3f}"
                 )
 
             if terminated or truncated:
-                print(f"Episode ended (step {step}, {'dropped' if terminated else 'timeout'}). Resetting...")
-                obs, info = env.reset(seed=args.seed + step)
+                outcome = "dropped" if terminated else "timeout (survived full ep)"
+                print(f"Episode {episode} ended (step {step}, {outcome}). Resetting...")
+                if args.randomize:
+                    reset_seed = int(rng.integers(0, 2**31 - 1))
+                else:
+                    reset_seed = args.seed + episode + 1
+                obs, info = env.reset(seed=reset_seed)
                 hold_ctrl = env.data.ctrl.copy().astype(np.float32)
                 ou_noise.reset()
                 step = 0
+                episode += 1
 
+            # Draw a force arrow using user_scn (mjVIS_PERTFORCE only draws mouse
+            # perturbations, not arbitrary xfrc_applied — so we render our own).
             if args.show_forces and hasattr(env, "last_applied_force"):
-                # env.step() clears xfrc_applied; re-write it so the PERTFORCE
-                # arrow is visible during render. Does not affect physics
-                # (next step() overwrites before mj_step).
-                env.data.xfrc_applied[env._obj_body][:3] = env.last_applied_force
+                viewer.user_scn.ngeom = 0
+                f = env.last_applied_force
+                mag = float(np.linalg.norm(f))
+                if mag > 1e-6:
+                    start = env.data.xpos[env._obj_body].astype(np.float64)
+                    end = start + f.astype(np.float64) * args.arrow_scale
+                    geom = viewer.user_scn.geoms[0]
+                    geom.rgba[:] = [1.0, 0.2, 0.2, 0.9]
+                    mujoco.mjv_connector(
+                        geom, mujoco.mjtGeom.mjGEOM_ARROW, 0.004,
+                        start, end,
+                    )
+                    viewer.user_scn.ngeom = 1
 
             viewer.sync()
             rate.sleep()
