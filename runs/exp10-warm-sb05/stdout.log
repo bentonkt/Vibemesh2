@@ -1,0 +1,102 @@
+Run: exp10-warm-sb05
+Log dir: runs\exp10-warm-sb05
+Total steps: 500,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.5  retention_scale: 10.0
+Loading model from runs\exp8-ee-delta-sb05\best\best_model.zip
+[   10000] ep_len= 125.5 ep_rew=  +30.91 fps=  106
+[   20000] ep_len= 130.4 ep_rew=  +31.88 fps=  106
+Eval num_timesteps=25000, episode_reward=101.53 +/- 33.36
+Episode length: 338.80 +/- 105.19
+New best mean reward!
+[   30000] ep_len= 134.8 ep_rew=  +34.00 fps=  103
+[   40000] ep_len= 147.9 ep_rew=  +39.04 fps=  108
+Eval num_timesteps=50000, episode_reward=155.48 +/- 51.71
+Episode length: 425.20 +/- 93.69
+New best mean reward!
+[   50000] ep_len= 157.2 ep_rew=  +41.22 fps=  109
+[   60000] ep_len= 170.4 ep_rew=  +45.09 fps=  113
+[   70000] ep_len= 172.0 ep_rew=  +45.22 fps=  116
+Eval num_timesteps=75000, episode_reward=109.09 +/- 36.89
+Episode length: 335.60 +/- 87.70
+[   80000] ep_len= 176.2 ep_rew=  +46.21 fps=  116
+[   90000] ep_len= 191.1 ep_rew=  +50.94 fps=  120
+Eval num_timesteps=100000, episode_reward=163.29 +/- 33.11
+Episode length: 500.00 +/- 0.00
+New best mean reward!
+[  100000] ep_len= 189.7 ep_rew=  +50.13 fps=  119
+[  110000] ep_len= 186.4 ep_rew=  +48.03 fps=  121
+[  120000] ep_len= 192.4 ep_rew=  +50.70 fps=  123
+Eval num_timesteps=125000, episode_reward=95.77 +/- 24.53
+Episode length: 348.60 +/- 78.21
+[  130000] ep_len= 200.0 ep_rew=  +53.04 fps=  123
+[  140000] ep_len= 203.5 ep_rew=  +53.09 fps=  125
+Eval num_timesteps=150000, episode_reward=107.75 +/- 12.92
+Episode length: 395.20 +/- 44.52
+[  150000] ep_len= 200.6 ep_rew=  +51.68 fps=  125
+[  160000] ep_len= 195.2 ep_rew=  +49.00 fps=  126
+[  170000] ep_len= 201.3 ep_rew=  +49.55 fps=  127
+Eval num_timesteps=175000, episode_reward=130.41 +/- 44.38
+Episode length: 416.20 +/- 104.67
+[  180000] ep_len= 208.8 ep_rew=  +50.77 fps=  127
+[  190000] ep_len= 211.3 ep_rew=  +50.38 fps=  129
+Eval num_timesteps=200000, episode_reward=89.50 +/- 7.95
+Episode length: 343.00 +/- 41.66
+[  200000] ep_len= 212.7 ep_rew=  +49.42 fps=  129
+[  210000] ep_len= 206.9 ep_rew=  +47.68 fps=  129
+[  220000] ep_len= 201.2 ep_rew=  +45.34 fps=  130
+Eval num_timesteps=225000, episode_reward=80.04 +/- 8.48
+Episode length: 381.60 +/- 20.48
+[  230000] ep_len= 216.9 ep_rew=  +49.40 fps=  131
+[  240000] ep_len= 230.0 ep_rew=  +52.90 fps=  132
+Eval num_timesteps=250000, episode_reward=93.22 +/- 23.30
+Episode length: 397.20 +/- 56.00
+[  250000] ep_len= 228.4 ep_rew=  +51.85 fps=  132
+[  260000] ep_len= 230.2 ep_rew=  +53.20 fps=  133
+[  270000] ep_len= 232.5 ep_rew=  +53.58 fps=  134
+Eval num_timesteps=275000, episode_reward=136.59 +/- 6.82
+Episode length: 500.00 +/- 0.00
+[  280000] ep_len= 236.6 ep_rew=  +52.68 fps=  134
+[  290000] ep_len= 240.4 ep_rew=  +51.76 fps=  134
+Eval num_timesteps=300000, episode_reward=86.90 +/- 10.54
+Episode length: 418.00 +/- 47.64
+[  300000] ep_len= 245.2 ep_rew=  +52.52 fps=  135
+[  310000] ep_len= 248.9 ep_rew=  +53.62 fps=  135
+[  320000] ep_len= 250.6 ep_rew=  +53.53 fps=  136
+Eval num_timesteps=325000, episode_reward=93.19 +/- 12.57
+Episode length: 442.00 +/- 51.23
+[  330000] ep_len= 250.2 ep_rew=  +53.79 fps=  136
+[  340000] ep_len= 249.1 ep_rew=  +54.32 fps=  137
+Eval num_timesteps=350000, episode_reward=130.60 +/- 14.12
+Episode length: 487.00 +/- 26.00
+[  350000] ep_len= 244.8 ep_rew=  +53.41 fps=  136
+[  360000] ep_len= 246.6 ep_rew=  +54.23 fps=  137
+[  370000] ep_len= 249.9 ep_rew=  +55.36 fps=  138
+Eval num_timesteps=375000, episode_reward=110.01 +/- 8.93
+Episode length: 452.80 +/- 35.56
+[  380000] ep_len= 257.8 ep_rew=  +57.03 fps=  138
+[  390000] ep_len= 270.3 ep_rew=  +60.81 fps=  139
+Eval num_timesteps=400000, episode_reward=153.83 +/- 5.88
+Episode length: 500.00 +/- 0.00
+[  400000] ep_len= 280.6 ep_rew=  +63.50 fps=  139
+[  410000] ep_len= 293.3 ep_rew=  +67.02 fps=  139
+[  420000] ep_len= 299.2 ep_rew=  +68.51 fps=  140
+Eval num_timesteps=425000, episode_reward=189.46 +/- 27.89
+Episode length: 500.00 +/- 0.00
+New best mean reward!
+[  430000] ep_len= 307.2 ep_rew=  +69.85 fps=  140
+[  440000] ep_len= 308.1 ep_rew=  +70.04 fps=  141
+Eval num_timesteps=450000, episode_reward=187.27 +/- 14.57
+Episode length: 500.00 +/- 0.00
+[  450000] ep_len= 316.3 ep_rew=  +71.46 fps=  141
+[  460000] ep_len= 313.1 ep_rew=  +70.85 fps=  142
+[  470000] ep_len= 315.0 ep_rew=  +72.01 fps=  142
+Eval num_timesteps=475000, episode_reward=195.24 +/- 14.31
+Episode length: 500.00 +/- 0.00
+New best mean reward!
+[  480000] ep_len= 313.8 ep_rew=  +72.02 fps=  142
+[  490000] ep_len= 313.6 ep_rew=  +72.61 fps=  143
+Eval num_timesteps=500000, episode_reward=180.35 +/- 8.60
+Episode length: 500.00 +/- 0.00
+[  500000] ep_len= 326.9 ep_rew=  +76.87 fps=  143
+
+Final model saved to runs\exp10-warm-sb05\final.zip
+Total wall time: 3495.6s

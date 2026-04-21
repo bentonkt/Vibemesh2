@@ -29,20 +29,20 @@ from stable_baselines3.common.callbacks import (
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 
 
-def _make_env(seed: int, force_mag: float, survival_bonus: float = 0.0):
+def _make_env(seed: int, force_mag: float, survival_bonus: float = 0.0, retention_scale: float = 10.0):
     """Factory for a single GraspEnv instance (must be importable for subprocess)."""
     def _init():
         from scripts.env import GraspEnv
-        env = GraspEnv(force_mag=force_mag, survival_bonus=survival_bonus)
+        env = GraspEnv(force_mag=force_mag, survival_bonus=survival_bonus, retention_scale=retention_scale)
         env.reset(seed=seed)
         return env
     return _init
 
 
-def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0, survival_bonus: float = 0.0) -> SubprocVecEnv:
+def make_vec_env(n_envs: int, seed: int = 0, force_mag: float = 5.0, survival_bonus: float = 0.0, retention_scale: float = 10.0) -> SubprocVecEnv:
     import platform
     start_method = "fork" if platform.system() != "Windows" else "spawn"
-    fns = [_make_env(seed + i, force_mag, survival_bonus) for i in range(n_envs)]
+    fns = [_make_env(seed + i, force_mag, survival_bonus, retention_scale) for i in range(n_envs)]
     return SubprocVecEnv(fns, start_method=start_method)
 
 
@@ -94,6 +94,8 @@ def parse_args() -> argparse.Namespace:
                         help="Path to a .zip model to warm-start from (env is replaced)")
     parser.add_argument("--survival-bonus", type=float, default=0.0,
                         help="Per-step reward bonus for staying alive (0=disabled)")
+    parser.add_argument("--retention-scale", type=float, default=10.0,
+                        help="Scale on palm-relative displacement penalty (default 10.0)")
     return parser.parse_args()
 
 
@@ -107,13 +109,13 @@ def main() -> None:
 
     print(f"Run: {args.run_name}")
     print(f"Log dir: {run_dir}")
-    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}  survival_bonus: {args.survival_bonus}")
+    print(f"Total steps: {args.total_steps:,}  n_envs: {args.n_envs}  force_mag: {args.force_mag}  survival_bonus: {args.survival_bonus}  retention_scale: {args.retention_scale}")
 
     # Training envs
-    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag, survival_bonus=args.survival_bonus))
+    train_env = VecMonitor(make_vec_env(args.n_envs, seed=0, force_mag=args.force_mag, survival_bonus=args.survival_bonus, retention_scale=args.retention_scale))
 
     # Single eval env
-    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag, survival_bonus=args.survival_bonus))
+    eval_env = VecMonitor(make_vec_env(1, seed=9999, force_mag=args.force_mag, survival_bonus=args.survival_bonus, retention_scale=args.retention_scale))
 
     # Callbacks
     checkpoint_cb = CheckpointCallback(

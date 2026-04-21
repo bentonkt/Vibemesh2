@@ -1,0 +1,47 @@
+Run: exp7-ee-delta-survival
+Log dir: runs/exp7-ee-delta-survival
+Total steps: 300,000  n_envs: 4  force_mag: 5.0  survival_bonus: 0.1
+[   10000] ep_len=  22.0 ep_rew=  -12.00 fps=   26
+[   20000] ep_len=  22.4 ep_rew=  -12.02 fps=   26
+Eval num_timesteps=25000, episode_reward=-11.81 +/- 0.16
+Episode length: 20.80 +/- 1.33
+New best mean reward!
+[   30000] ep_len=  22.1 ep_rew=  -12.05 fps=   26
+[   40000] ep_len=  22.2 ep_rew=  -12.01 fps=   26
+Eval num_timesteps=50000, episode_reward=-11.78 +/- 0.19
+Episode length: 20.80 +/- 1.17
+New best mean reward!
+[   50000] ep_len=  22.3 ep_rew=  -11.98 fps=   26
+[   60000] ep_len=  22.5 ep_rew=  -11.98 fps=   26
+[   70000] ep_len=  22.7 ep_rew=  -11.93 fps=   26
+Eval num_timesteps=75000, episode_reward=-11.57 +/- 0.25
+Episode length: 22.80 +/- 1.17
+New best mean reward!
+[   80000] ep_len=  22.5 ep_rew=  -11.87 fps=   26
+[   90000] ep_len=  22.8 ep_rew=  -11.84 fps=   26
+Eval num_timesteps=100000, episode_reward=-11.56 +/- 0.28
+Episode length: 22.40 +/- 1.62
+New best mean reward!
+[  100000] ep_len=  23.0 ep_rew=  -11.88 fps=   26
+[  110000] ep_len=  23.4 ep_rew=  -11.89 fps=   26
+[  120000] ep_len=  23.8 ep_rew=  -11.84 fps=   26
+Eval num_timesteps=125000, episode_reward=-11.36 +/- 0.10
+Episode length: 23.00 +/- 0.63
+New best mean reward!
+[  130000] ep_len=  23.6 ep_rew=  -11.81 fps=   26
+[  140000] ep_len=  23.8 ep_rew=  -11.78 fps=   26
+Eval num_timesteps=150000, episode_reward=-11.21 +/- 0.20
+Episode length: 24.20 +/- 0.98
+New best mean reward!
+[  150000] ep_len=  24.9 ep_rew=  -11.78 fps=   26
+[  160000] ep_len=  24.8 ep_rew=  -11.80 fps=   26
+[  170000] ep_len=  24.9 ep_rew=  -11.73 fps=   27
+Eval num_timesteps=175000, episode_reward=-11.36 +/- 0.28
+Episode length: 23.60 +/- 1.20
+[  180000] ep_len=  25.1 ep_rew=  -11.75 fps=   27
+[  190000] ep_len=  25.4 ep_rew=  -11.75 fps=   27
+Eval num_timesteps=200000, episode_reward=-11.06 +/- 0.16
+Episode length: 22.20 +/- 0.75
+New best mean reward!
+[  200000] ep_len=  26.1 ep_rew=  -11.74 fps=   27
+[  210000] ep_len=  26.2 ep_rew=  -11.71 fps=   27
