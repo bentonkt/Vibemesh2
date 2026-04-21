@@ -79,6 +79,7 @@ class GraspEnv(gym.Env):
         drop_threshold: float = 0.05,
         force_mag: float = DEFAULT_FORCE_MAG,
         survival_bonus: float = REWARD_ALIVE_BONUS,
+        retention_scale: float = REWARD_RETENTION_SCALE,
         keyframes_path: str | Path | None = None,
     ) -> None:
         super().__init__()
@@ -88,6 +89,7 @@ class GraspEnv(gym.Env):
         self.drop_threshold = drop_threshold
         self.force_mag = force_mag
         self.survival_bonus = survival_bonus
+        self.retention_scale = retention_scale
 
         self.model, self.data, self._temp_dir = build_scene(object_id)
         self._home_key = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_KEY, "home")
@@ -300,7 +302,7 @@ class GraspEnv(gym.Env):
             self._palm_relative_obj_pos() - self._initial_palm_rel
         ))
         dropped = displacement > self.drop_threshold
-        r_retention = -REWARD_RETENTION_SCALE * displacement
+        r_retention = -self.retention_scale * displacement
         r_drop = REWARD_DROP_PENALTY if dropped else 0.0
         r_smooth = -REWARD_SMOOTH_ALPHA * float(
             np.linalg.norm(np.asarray(action, dtype=np.float64) - self._prev_action)
