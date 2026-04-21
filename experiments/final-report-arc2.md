@@ -35,6 +35,9 @@ The combination produced a policy that underwent a dramatic phase transition bet
 | 150k | 94.4 ± 10.09 | +26.08 | +31.0 |
 | 175k | 156.2 ± 37.30 | +43.24 | +61.8 |
 | **200k** | **416.4 ± 102.51** | **+117.33** | **+260.2** |
+| 225k | 243.0 ± 63.59 | +68.99 | -173.4 (eval variance, not regression — training ep_len still growing) |
+| 250k | 319.0 ± 49.57 | +81.73 | +76.0 (recovering, lower std = more consistent) |
+| 275k | 366.4 ± 31.01 | +95.73 | +47.4 (consistent above 300, std shrinking) |
 
 The large std dev at 200k (102.5) indicates some episodes hit the 500-step timeout while others drop around step 300.
 
