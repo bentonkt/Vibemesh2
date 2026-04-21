@@ -14,8 +14,9 @@
     {"id": "exp5-survival-bonus", "result": "SUCCESS. eval ep_len 100.2 @ 275k (vs prior best 25.8). Breakthrough at ~200k steps. 23D raw joint ctrl + survival bonus=0.1, n_steps=512.", "claim_tested": "C5 (survival bonus)"},
     {"id": "exp6-ee-delta (shitter)", "result": "eval=37.2 @ 300k, steady climb, no breakthrough. 22D EE-delta + 3-term reward (NO survival bonus). Better than exp1 but far below exp5.", "claim_tested": "C6 (EE-delta action space)"},
     {"id": "exp6-ee-delta-3090", "result": "eval=35.4 @ 300k. Matches shitter run within noise — reproducible.", "claim_tested": "C6"},
-    {"id": "exp7-ee-delta-survival", "status": "running (160k/300k)", "host": "shitter", "config": "EE-delta + survival_bonus=0.1 + n_steps=512", "partial": "eval=30.4 @150k, stalled. Training ep_len 50.6 @ 160k. Negative reward throughout. FAIL — C7 requires bonus>=0.5.", "claim_tested": "C7"},
-    {"id": "exp8-ee-delta-sb05", "status": "running (200k/300k) — GOAL HIT", "host": "3090", "config": "EE-delta + survival_bonus=0.5 + n_steps=2048", "partial": "GOAL ACHIEVED. eval=416.4 @ 200k. Phase transition between 175k→200k. Eval trajectory: 50→63→94→156→416.", "claim_tested": "C7+C8"}
+    {"id": "exp7-ee-delta-survival", "status": "running (270k/300k)", "host": "shitter", "config": "EE-delta + survival_bonus=0.1 + n_steps=512", "partial": "Late breakthrough at 250k eval=132.8! Training ep_len 105.4 @ 270k and growing fast. May reach 300+ eval by 300k.", "claim_tested": "C7"},
+    {"id": "exp8-ee-delta-sb05", "status": "DONE", "host": "3090", "config": "EE-delta + survival_bonus=0.5 + n_steps=512", "result": "GOAL ACHIEVED. Best eval=416.4 @ 200k. Final eval 367.0 @ 300k. Phase transition 175k→200k. Both exp7+exp8 use n_steps=512 — sole difference was survival_bonus.", "claim_tested": "C7+C8"},
+    {"id": "exp10-warm-sb05", "status": "running (10k/500k)", "host": "3090", "config": "Warm-start from exp8 best + EE-delta + survival_bonus=0.5 + n_steps=512", "partial": "ep_len=125.5, ep_rew=+30.91 at 10k. Immediate positive territory. Target: eval 500.", "claim_tested": "C9-warm-start"}
   ],
   "claims": {
     "C1": {"statement": "PPO + 45D obs can learn to hold better than random, given enough gradient updates", "evidence": "positive"},

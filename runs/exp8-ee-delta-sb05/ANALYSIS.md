@@ -4,7 +4,7 @@
 **Date**: 2026-04-21  
 **Host**: 3090 (Windows, CPU)  
 **Wall time**: 5322.3s (88.7 min)  
-**Config**: total_steps=300k, n_envs=4, n_steps=2048, batch_size=256, lr=3e-4, force_mag=5.0, survival_bonus=0.5, retention_scale=10.0  
+**Config**: total_steps=300k, n_envs=4, n_steps=512, batch_size=256, lr=3e-4, force_mag=5.0, survival_bonus=0.5, retention_scale=10.0 (default)  
 
 ## ARC-2 GOAL: ACHIEVED
 **eval ep_length = 416.4 ± 102.51 @ 200k steps** (goal: >= 400, max: 500)
@@ -73,12 +73,18 @@ The most striking result: eval jumped from 156.2 (175k) to 416.4 (200k) — +260
 that almost always holds but occasionally drops. By 275k, std narrows to 31.01 — policy
 is consolidating the strategy.
 
-### 2. Training-eval gap
+### 2. n_steps=512 confirmed effective at long episode lengths
+Both exp7 and exp8 use n_steps=512. Prior analysis (C3) found n_steps=512 optimal at short
+ep_len (~25). With exp8 now achieving ep_len=400+, n_steps=512 remains effective even at
+long ep_len. The learning instability seen in exp2 (n_steps=1024) may not apply here given
+the survival bonus provides a stable positive gradient throughout.
+
+### 3. Training-eval gap
 Training ep_len at 200k = 123.2, eval ep_len = 416.4. The deterministic policy is 3.4×
 longer than the stochastic training policy. Exploration noise causes premature drops during
 training. The deterministic policy (no noise) achieves near-timeout holds.
 
-### 3. Exponential growth through 175k, then plateauing post-200k
+### 4. Exponential growth through 175k, then plateauing post-200k
 Eval trajectory: 24.8 → 50.0 → 94.4 → 156.2 → 416.4 (exponential phase)
 Then: 243.0 → 319.0 → 366.4 → 367.0 (plateau with variance around 300-400)
 Training continues growing monotonically to 199.6 at 300k — policy still improving but
@@ -94,16 +100,14 @@ fewer resets (reset is expensive: involves keyframe replay + IK settlement).
 
 Comparison to nearest neighbors:
 - exp5 (raw joints + bonus=0.1): eval 100.2 @ 275k
-- exp7 (EE-delta + bonus=0.1): eval ~50 @ 300k (stalled in neg reward)
-- **exp8 (EE-delta + bonus=0.5)**: eval 416.4 @ 200k ← winner
+- exp7 (EE-delta + bonus=0.1 + n_steps=512): eval 132.8 @ 250k (late breakthrough)
+- **exp8 (EE-delta + bonus=0.5 + n_steps=512)**: eval 416.4 @ 200k ← winner
 
 Two factors compound:
 1. **EE-delta action space**: constrains arm motion to purposeful IK-resolved movements,
    preventing catastrophic arm wiggling. Also implicitly regularizes — zero action = hold still.
-2. **survival_bonus=0.5**: provides +0.5/step positive reward (vs -10.0 retention at 0.05m
-   displacement). Strong enough to overcome the IK residual noise that bonus=0.1 could not.
-3. **n_steps=2048**: with episodes of 50-200 steps, longer rollouts give much better return
-   estimates and value function training than n_steps=512.
+2. **survival_bonus=0.5**: provides +0.5/step positive reward. Strong enough to escape the
+   negative-reward basin ~100k steps earlier than bonus=0.1. Both share identical n_steps=512.
 
 ---
 
